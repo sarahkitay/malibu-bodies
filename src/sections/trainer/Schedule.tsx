@@ -72,7 +72,7 @@ export function Schedule({ onBack }: ScheduleProps) {
   };
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-above-nav">
       <Header
         title="Schedule"
         subtitle="Manage your sessions"

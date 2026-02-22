@@ -70,7 +70,7 @@ export function TrainerPersonalProgramPage({ onBack }: TrainerPersonalProgramPag
   };
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-above-nav">
       <Header title="My Program" subtitle="Your personal workout plan" showBack onBack={onBack} />
 
       <div className="px-4 py-4 space-y-4 max-w-lg mx-auto">

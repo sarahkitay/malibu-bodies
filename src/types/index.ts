@@ -29,6 +29,8 @@ export interface Client {
   medicalHistory?: string;
   /** For identity worksheet pronoun choice: woman (she/her), man (he/him), non-binary/other (they/them) */
   gender?: 'woman' | 'man' | 'non-binary';
+  /** Virtual (custom), virtual (prebuilt), or in-person */
+  clientType?: 'virtual-custom' | 'virtual-prebuilt' | 'in-person';
 }
 
 export interface Trainer {

@@ -19,7 +19,7 @@ export function ExercisesTab({ onBack }: ExercisesTabProps) {
   const customExercises = getExerciseLibrary();
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-above-nav">
       <Header
         title="Exercise Library"
         subtitle="Add custom exercises, cues & reference videos"

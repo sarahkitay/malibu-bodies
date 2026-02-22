@@ -75,7 +75,7 @@ export function ScheduleSessionModal({
         initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 100 }}
-        className="fixed top-4 left-4 right-4 z-50 glass-strong rounded-3xl max-h-[calc(100vh-6rem)] overflow-y-auto max-w-lg mx-auto"
+        className="fixed top-4 left-4 right-4 z-50 glass-strong rounded-2xl max-h-[calc(100vh-5rem)] overflow-y-auto max-w-lg mx-auto pt-[env(safe-area-inset-top)]"
       >
         <div className="sticky top-0 glass-strong rounded-t-3xl px-4 py-4 flex items-center justify-between border-b border-[var(--border)] z-10">
           <h2 className="text-xl font-semibold text-[var(--foreground)]">
@@ -138,24 +138,29 @@ export function ScheduleSessionModal({
               <label className="text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wide mb-2 block">
                 Date
               </label>
-              <GlassInput
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="bg-white/30"
-                required
-              />
+              <div className="rounded-2xl overflow-hidden ring-2 ring-[var(--primary)]/30 shadow-inner" style={{ background: 'linear-gradient(135deg, var(--theme-gradient-start) 0%, var(--theme-gradient-end) 100%)' }}>
+                <input
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 bg-white/25 border-0 outline-none focus:ring-2 focus:ring-white/50 text-[var(--foreground)] min-h-[48px] text-base"
+                  style={{ color: 'inherit' }}
+                />
+              </div>
             </div>
             <div>
               <label className="text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wide mb-2 block">
                 Time
               </label>
-              <GlassInput
-                type="time"
+              <input
+                type="text"
+                inputMode="numeric"
+                placeholder="e.g. 9:00 AM"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="bg-white/30"
                 required
+                className="w-full px-4 py-3 rounded-2xl bg-white/30 border border-[var(--border)] outline-none focus:ring-2 focus:ring-[var(--primary)]/30 text-[var(--foreground)] min-h-[48px] text-base"
               />
             </div>
           </div>

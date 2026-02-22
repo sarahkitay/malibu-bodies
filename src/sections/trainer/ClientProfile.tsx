@@ -65,7 +65,7 @@ export function ClientProfile({ clientId, onBack }: ClientProfileProps) {
   }
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-above-nav">
       {/* Header - compact */}
       <motion.header
         initial={{ opacity: 0, y: -20 }}
@@ -404,7 +404,7 @@ function IntakeTab({ clientId }: { clientId: string }) {
   const intakeUrl = `${baseUrl}?intake=1&trainerId=${trainerId}`;
   const intakeUrlNewClient = `${baseUrl}?intake=1&newClient=1&intakeOnly=1&trainerId=${trainerId}`;
   const shareTitle = 'Malibu Bodies Application & Intake Form';
-  const shareText = 'You are invited to Malibu Bodies. Download/open the app and complete your intake to unlock your full client portal.';
+  const shareText = 'You\'re invited to Malibu Bodies. Fill out the intake form online (link below) or download the app—then complete your intake to unlock your full client portal.';
   const savedIntakes = getClientIntakeForms(clientId);
 
   useEffect(() => {
@@ -632,13 +632,13 @@ function InviteIntakeModal({
   const buildMailTo = (url: string) => {
     const subject = encodeURIComponent('Malibu Bodies Intake + App Invite');
     const body = encodeURIComponent(
-      `You are invited to Malibu Bodies.\n\nDownload/open the app and complete your intake form to unlock your full client portal:\n${url}`
+      `You're invited to Malibu Bodies.\n\nYou can fill out the intake form online (link below) or download the app first—then complete your intake to unlock your full client portal:\n${url}`
     );
     return `mailto:?subject=${subject}&body=${body}`;
   };
 
   const buildSms = (url: string) => {
-    const text = encodeURIComponent(`Malibu Bodies invite: download/open the app and complete your intake to unlock your portal: ${url}`);
+    const text = encodeURIComponent(`Malibu Bodies invite: fill out the form online or download the app, then complete your intake to unlock your portal: ${url}`);
     const sep = /iPad|iPhone|iPod/.test(navigator.userAgent) ? '&' : '?';
     return `sms:${sep}body=${text}`;
   };
@@ -654,7 +654,7 @@ function InviteIntakeModal({
         <div className="space-y-4">
           <div>
             <p className="text-sm font-medium mb-2">New client</p>
-            <p className="text-xs text-[var(--muted-foreground)] mb-2">Intake-only mode until submitted; after submit, full app unlocks.</p>
+            <p className="text-xs text-[var(--muted-foreground)] mb-2">They can fill out the form online or download the app first. After submit, full app unlocks.</p>
             <div className="flex gap-2">
               <GlassButton variant="primary" size="sm" leftIcon={<Mail className="w-4 h-4" />} onClick={() => onShare(true)}>Share</GlassButton>
               <GlassButton size="sm" onClick={() => copyAndFallback(intakeUrlNewClient)}>Copy link</GlassButton>

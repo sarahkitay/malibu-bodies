@@ -110,30 +110,70 @@ You do not need a new personality. You need new standards. And those start here.
 
   const sections = [
     { id: 'cover', title: 'Cover' },
-    { id: 'part1', title: 'Part 1: Current You' },
-    { id: 'part2', title: 'Part 2: The Gap' },
-    { id: 'part3', title: 'Part 3: Future You' },
-    { id: 'part4', title: 'Part 4: The Bridge' },
+    { id: 'part1', title: 'Part 1' },
+    { id: 'part2', title: 'Part 2' },
+    { id: 'part3', title: 'Part 3' },
+    { id: 'part4', title: 'Part 4' },
     { id: 'final', title: 'Declaration' },
   ];
 
+  const currentIndex = sections.findIndex((s) => s.id === activeSection);
+  const safeIndex = currentIndex < 0 ? 0 : currentIndex;
+  const currentSection = sections[safeIndex];
+  const nextSection = sections[safeIndex + 1];
+  const progressPercent = ((safeIndex + 1) / sections.length) * 100;
+
+  const goPrev = () => {
+    if (safeIndex > 0) setActiveSection(sections[safeIndex - 1].id);
+  };
+  const goNext = () => {
+    if (safeIndex < sections.length - 1) setActiveSection(sections[safeIndex + 1].id);
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Section nav */}
-      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-        {sections.map((s) => (
+    <div className="space-y-6 pb-safe">
+      {/* Current / Next page + progress bar — mobile-friendly */}
+      <div className="sticky top-0 z-10 -mx-4 px-4 pt-[calc(0.5rem+env(safe-area-inset-top))] pb-3 bg-[var(--background)]/95 backdrop-blur-md border-b border-[var(--border)]/50">
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">Current page</p>
+            <p className="text-sm font-semibold text-[var(--foreground)] truncate">{currentSection?.title ?? 'Cover'}</p>
+          </div>
+          <div className="min-w-0 flex-1 text-right">
+            <p className="text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">Next page</p>
+            <p className="text-sm font-semibold text-[var(--muted-foreground)] truncate">{nextSection?.title ?? '—'}</p>
+          </div>
+        </div>
+        <div className="h-1.5 w-full rounded-full bg-white/40 overflow-hidden">
+          <div
+            className="h-full rounded-full bg-[var(--primary)] transition-all duration-300 ease-out"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+        <div className="flex gap-2 mt-3 min-h-[44px]">
           <button
-            key={s.id}
             type="button"
-            onClick={() => setActiveSection(s.id)}
+            onClick={goPrev}
+            disabled={safeIndex === 0}
             className={cn(
-              'px-3 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-colors',
-              activeSection === s.id ? 'bg-[var(--primary)] text-white' : 'bg-white/50'
+              'flex-1 py-2.5 rounded-xl text-sm font-medium transition-colors touch-manipulation',
+              safeIndex === 0 ? 'bg-white/30 text-[var(--muted-foreground)] opacity-60 cursor-not-allowed' : 'bg-white/60 text-[var(--foreground)] active:bg-white/80'
             )}
           >
-            {s.title}
+            Previous
           </button>
-        ))}
+          <button
+            type="button"
+            onClick={goNext}
+            disabled={safeIndex === sections.length - 1}
+            className={cn(
+              'flex-1 py-2.5 rounded-xl text-sm font-medium transition-colors touch-manipulation',
+              safeIndex === sections.length - 1 ? 'bg-white/30 text-[var(--muted-foreground)] opacity-60 cursor-not-allowed' : 'bg-[var(--primary)] text-[var(--primary-foreground)] active:opacity-90'
+            )}
+          >
+            Next
+          </button>
+        </div>
       </div>
 
       {/* Cover */}

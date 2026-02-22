@@ -5,6 +5,7 @@ import { GlassButton } from '@/components/glass/GlassButton';
 import { GlassInput, GlassTextArea } from '@/components/glass/GlassInput';
 import { addClient, generateAccessCode } from '@/data/mockData';
 import type { NewClientInput } from '@/data/mockData';
+import { cn } from '@/lib/utils';
 
 interface AddClientModalProps {
   onClose: () => void;
@@ -25,6 +26,7 @@ export function AddClientModal({ onClose, onSuccess, trainerId, trainerName }: A
   const [emergencyRelation, setEmergencyRelation] = useState('');
   const [goals, setGoals] = useState('');
   const [medicalHistory, setMedicalHistory] = useState('');
+  const [clientType, setClientType] = useState<'virtual-custom' | 'virtual-prebuilt' | 'in-person'>('in-person');
   const [error, setError] = useState('');
   const [generatedCode, setGeneratedCode] = useState<string | null>(null);
   const [justAdded, setJustAdded] = useState(false);
@@ -74,6 +76,7 @@ export function AddClientModal({ onClose, onSuccess, trainerId, trainerName }: A
           : undefined,
       goals: goals.trim() ? goals.trim().split(',').map((g) => g.trim()).filter(Boolean) : undefined,
       medicalHistory: medicalHistory.trim() || undefined,
+      clientType,
     };
 
     const client = addClient(input, trainerId, trainerName);
@@ -188,6 +191,32 @@ export function AddClientModal({ onClose, onSuccess, trainerId, trainerName }: A
               required
               className="bg-white/30"
             />
+          </div>
+
+          {/* Client Type */}
+          <div>
+            <label className="text-xs font-medium text-[var(--muted-foreground)] uppercase tracking-wide mb-2 block">
+              Client type
+            </label>
+            <div className="flex flex-col gap-2">
+              {[
+                { value: 'virtual-custom' as const, label: 'Virtual – online custom' },
+                { value: 'virtual-prebuilt' as const, label: 'Virtual – online prebuilt' },
+                { value: 'in-person' as const, label: 'In person' },
+              ].map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setClientType(opt.value)}
+                  className={cn(
+                    'w-full py-2.5 px-4 rounded-xl text-sm font-medium text-left transition-colors',
+                    clientType === opt.value ? 'bg-[var(--primary)] text-white' : 'bg-white/50 hover:bg-white/70'
+                  )}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Client Access Code */}

@@ -47,7 +47,7 @@ export function ClientProfile({ clientId, onBack, onLogout }: ClientProfileProps
   ];
 
   return (
-    <div className="min-h-screen pb-24 flex flex-col">
+    <div className="min-h-screen pb-above-nav flex flex-col">
       <Header
         title="Profile"
         showBack

@@ -190,7 +190,7 @@ export function InspirationBoard({ clientId, onBack }: InspirationBoardProps) {
   const selected = items.find(i => i.id === selectedId);
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-above-nav">
       <Header title="Mood Board" showBack onBack={onBack} />
 
       <div className="px-4 py-4 max-w-lg mx-auto space-y-4">

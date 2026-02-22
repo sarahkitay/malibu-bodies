@@ -48,7 +48,7 @@ export function ClientBookings({ clientId, onBack }: ClientBookingsProps) {
   const upcomingBookings = clientBookings.filter(b => parseLocalDate(b.date) >= new Date(new Date().setHours(0, 0, 0, 0)) && b.status !== 'cancelled' && b.status !== 'completed');
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-above-nav">
       <Header
         title="My Bookings"
         subtitle="Request a session"

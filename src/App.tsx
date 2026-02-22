@@ -75,7 +75,7 @@ function TrainerProfilePage({ onLogout, onNavigate, onNavigateToClients }: { onL
   };
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-above-nav">
       <div className="px-4 py-8 max-w-lg mx-auto space-y-4">
         <h2 className="text-2xl font-semibold text-[var(--foreground)]">Trainer Profile</h2>
         <p className="text-[var(--muted-foreground)] mb-6">Manage your profile and settings</p>
@@ -806,7 +806,7 @@ function App() {
     }
     return (
       <ThemeProvider>
-        <div className="min-h-screen bg-[var(--background)]">
+        <div className="min-h-screen bg-[var(--background)] pt-safe">
           <LoginScreen />
         </div>
       </ThemeProvider>
@@ -832,7 +832,7 @@ function App() {
   return (
     <ThemeProvider>
       <Toaster position="top-center" richColors closeButton />
-      <div className="min-h-screen bg-[var(--background)]">
+      <div className="min-h-screen bg-[var(--background)] pt-safe">
         {/* Mobile Container */}
         <div className="max-w-lg mx-auto min-h-screen relative">
           <AnimatePresence mode="wait">

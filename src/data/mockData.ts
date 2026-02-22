@@ -318,7 +318,7 @@ export const pastMemberships: PastMembership[] = [
 ];
 export const clientSpecificPackages: ClientSpecificPackage[] = [];
 export const identityWorksheetEntries: IdentityWorksheetEntry[] = [];
-const clientNotificationPrefs: Record<string, boolean> = {};
+const clientNotificationPrefs: Record<string, 'all' | 'session-only' | 'off'> = {};
 const clientDataSharingPrefs: Record<string, { progress: boolean; nutrition: boolean; photos: boolean }> = {};
 /** Trainer chooses what to share with each client; optional arrays = which specific items to share (when category is on) */
 export type TrainerDataSharePrefs = {
@@ -434,11 +434,21 @@ export function addIdentityWorksheetEntry(e: Omit<IdentityWorksheetEntry, 'id'>)
   return newE;
 }
 
+export type ClientNotificationLevel = 'all' | 'session-only' | 'off';
+
+export function getClientNotificationLevel(clientId: string): ClientNotificationLevel {
+  return clientNotificationPrefs[clientId] ?? 'all';
+}
+export function setClientNotificationLevel(clientId: string, level: ClientNotificationLevel): void {
+  clientNotificationPrefs[clientId] = level;
+}
+/** True if any notifications are on (all or session-only). */
 export function getClientNotificationEnabled(clientId: string): boolean {
-  return clientNotificationPrefs[clientId] ?? true;
+  const level = clientNotificationPrefs[clientId] ?? 'all';
+  return level !== 'off';
 }
 export function setClientNotificationEnabled(clientId: string, enabled: boolean): void {
-  clientNotificationPrefs[clientId] = enabled;
+  clientNotificationPrefs[clientId] = enabled ? 'all' : 'off';
 }
 
 export function getClientDataSharingPrefs(clientId: string) {
@@ -887,6 +897,7 @@ export interface NewClientInput {
   emergencyContact?: { name: string; phone: string; relationship: string };
   goals?: string[];
   medicalHistory?: string;
+  clientType?: 'virtual-custom' | 'virtual-prebuilt' | 'in-person';
 }
 
 export function addLeadToList(trainerId: string, trainerName: string, info: { name: string; email: string; phone?: string }, leadType: 'cold' | 'warm'): Client {
@@ -933,6 +944,7 @@ export function addClient(input: NewClientInput, trainerId: string, trainerName:
     accessCode,
     emergencyContact: input.emergencyContact,
     medicalHistory: input.medicalHistory?.trim(),
+    clientType: input.clientType,
     goals: input.goals,
   };
 

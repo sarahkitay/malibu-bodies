@@ -39,7 +39,7 @@ export function ClientProgress({ clientId, onBack, initialTab }: ClientProgressP
   ];
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-above-nav">
       <Header
         title="My Progress"
         subtitle="Track your journey"

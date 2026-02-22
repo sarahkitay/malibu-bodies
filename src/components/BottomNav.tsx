@@ -36,9 +36,9 @@ export function BottomNav({ activeTab, onTabChange, role }: BottomNavProps) {
     <motion.nav
       initial={{ y: 100 }}
       animate={{ y: 0 }}
-      className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-safe"
+      className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-[calc(6px+env(safe-area-inset-bottom))]"
     >
-      <div className="glass-nav rounded-t-2xl mx-auto max-w-md border-t border-white/40 py-2 px-3 pb-[calc(8px+env(safe-area-inset-bottom))] shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
+      <div className="glass-nav rounded-t-2xl mx-auto max-w-md border-t border-white/40 py-2 px-3 pb-[calc(10px+env(safe-area-inset-bottom))] pt-3 shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
         <div className="flex items-center justify-around">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;

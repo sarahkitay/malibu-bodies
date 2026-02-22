@@ -46,7 +46,7 @@ export function LoginScreen() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12 relative overflow-hidden font-sans">
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12 pt-[max(1rem,env(safe-area-inset-top))] relative overflow-hidden font-sans">
       {/* Background gradient */}
       <div
         className="fixed inset-0 z-0"

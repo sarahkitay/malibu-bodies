@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, Clock, ChevronRight, Plus, ClipboardList, ListTodo, Dumbbell, Flame } from 'lucide-react';
+import { Calendar, Clock, ChevronRight, Plus, ClipboardList, ListTodo, Dumbbell, Flame, FileText } from 'lucide-react';
 import { GlassCard } from '@/components/glass/GlassCard';
 import { GlassButton } from '@/components/glass/GlassButton';
 import { WelcomeHeader } from '@/components/Header';
@@ -10,6 +10,7 @@ import { LogSessionModal } from '@/sections/trainer/LogSessionModal';
 import { NotificationsPanel } from '@/sections/trainer/NotificationsPanel';
 import { currentUser, getTrainerClients, bookings, getNotificationsForTrainer, getTrainerPrograms, getTrainerProgram } from '@/data/mockData';
 import { useAuth } from '@/contexts/AuthContext';
+import { getIntakeSubmissions } from '@/lib/firebaseIntake';
 import { cn } from '@/lib/utils';
 import { getActivityGreeting } from '@/lib/greeting';
 
@@ -30,7 +31,17 @@ export function TrainerDashboard({ onViewClients, onViewClient, onViewSchedule, 
   const [showNotifications, setShowNotifications] = useState(false);
   const [showAddProgram, setShowAddProgram] = useState(false);
   const [editingProgramId, setEditingProgramId] = useState<string | null>(null);
+  const [intakes, setIntakes] = useState<{ id: string; data: { fullName?: string; email?: string; submittedAt?: string } }[]>([]);
+  const [showAllIntakes, setShowAllIntakes] = useState(false);
   const activeClients = clients.filter(c => c.status === 'active');
+
+  useEffect(() => {
+    let cancelled = false;
+    getIntakeSubmissions(trainerId).then((list) => {
+      if (!cancelled) setIntakes(list);
+    });
+    return () => { cancelled = true; };
+  }, [trainerId]);
   const clientIds = new Set(clients.map(c => c.id));
   const todaysBookings = bookings.filter(b => {
     const bookingDate = new Date(b.date);
@@ -51,7 +62,7 @@ export function TrainerDashboard({ onViewClients, onViewClient, onViewSchedule, 
   ];
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-above-nav">
       <WelcomeHeader 
         name={currentUser.name}
         role="Personal Trainer"
@@ -87,11 +98,11 @@ export function TrainerDashboard({ onViewClients, onViewClient, onViewSchedule, 
         </motion.div>
 
         {/* Quick Actions */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="pb-2">
           <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-semibold text-[var(--foreground)]">Quick Actions</h2>
           </div>
-          <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+          <div className="flex gap-3 overflow-x-auto pb-3 -mx-4 px-4 scrollbar-hide">
             <GlassButton 
               variant="primary" 
               leftIcon={<Plus className="w-4 h-4" />}
@@ -115,6 +126,26 @@ export function TrainerDashboard({ onViewClients, onViewClient, onViewSchedule, 
               Log Session
             </GlassButton>
           </div>
+        </motion.div>
+
+        {/* Intakes */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}>
+          <GlassCard hover className="cursor-pointer" onClick={() => setShowAllIntakes(true)}>
+            <div className="p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[var(--primary)]/20 flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-[var(--primary)]" />
+                </div>
+                <div>
+                  <p className="font-medium text-[var(--foreground)]">Intakes</p>
+                  <p className="text-xs text-[var(--muted-foreground)]">
+                    {intakes.length === 0 ? 'No submissions yet' : `${intakes.length} submitted`}
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-[var(--muted-foreground)]" />
+            </div>
+          </GlassCard>
         </motion.div>
 
         {/* My Program & To-Do List */}
@@ -340,6 +371,34 @@ export function TrainerDashboard({ onViewClients, onViewClient, onViewSchedule, 
             onClose={() => { setShowAddProgram(false); setEditingProgramId(null); }}
             onSave={() => { setShowAddProgram(false); setEditingProgramId(null); }}
           />
+        )}
+        {showAllIntakes && (
+          <>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/30 z-50" onClick={() => setShowAllIntakes(false)} />
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="fixed top-4 left-4 right-4 z-50 glass-strong rounded-2xl max-h-[80vh] overflow-hidden flex flex-col max-w-lg mx-auto">
+              <div className="p-4 border-b border-[var(--border)] flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-[var(--foreground)]">All intakes</h2>
+                <button type="button" onClick={() => setShowAllIntakes(false)} className="w-10 h-10 rounded-xl hover:bg-white/50 flex items-center justify-center">×</button>
+              </div>
+              <div className="overflow-y-auto p-4 space-y-2">
+                {intakes.length === 0 ? (
+                  <p className="text-sm text-[var(--muted-foreground)]">No intake submissions yet.</p>
+                ) : (
+                  intakes.map(({ id, data }) => (
+                    <div key={id} className="p-3 rounded-xl bg-white/30 text-sm">
+                      <p className="font-medium text-[var(--foreground)]">{data.fullName ?? '—'}</p>
+                      <p className="text-[var(--muted-foreground)]">{data.email ?? '—'}</p>
+                      {data.submittedAt && (
+                        <p className="text-xs text-[var(--muted-foreground)] mt-1">
+                          {new Date(data.submittedAt).toLocaleDateString('en-US', { dateStyle: 'medium' })}
+                        </p>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </div>

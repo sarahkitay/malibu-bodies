@@ -15,7 +15,7 @@ export function ClientMemberships({ clientId, onBack }: ClientMembershipsProps) 
   const clientSpecificPackages = client ? getClientSpecificPackages(client.id) : [];
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-above-nav">
       <Header
         title="Memberships"
         subtitle="Purchase sessions & programs"

@@ -38,7 +38,7 @@ export function ProgressNotesTab({ onBack }: ProgressNotesTabProps) {
   }
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-above-nav">
       <Header
         title="Progress Notes"
         subtitle="View and add client notes"

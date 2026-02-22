@@ -6,7 +6,7 @@ import { GlassButton } from '@/components/glass/GlassButton';
 import { GlassBadge } from '@/components/glass/GlassBadge';
 import { CountUp } from '@/components/ui/CountUp';
 import { WelcomeHeader } from '@/components/Header';
-import { getClientById, getClientBookings, getAffirmationOfTheDay, updateBookingStatus, requestClientReschedule, isBookingWithin24Hours, updateClientGoals, getClientNotificationEnabled, setClientNotificationEnabled, addClientFeedback, getClientStarCount, getClientGifts, getProgressStreak, getSharedWorkoutPrograms, getProgramCompletion, setProgramWorkoutCompletion, getExerciseVideo, getExerciseExplanation, getIdentityWorksheetEntries, getClientNotifications, getUnreadClientNotificationCount, markClientNotificationsRead } from '@/data/mockData';
+import { getClientById, getClientBookings, getAffirmationOfTheDay, updateBookingStatus, requestClientReschedule, isBookingWithin24Hours, updateClientGoals, getClientNotificationLevel, setClientNotificationLevel, addClientFeedback, getClientStarCount, getClientGifts, getProgressStreak, getSharedWorkoutPrograms, getProgramCompletion, setProgramWorkoutCompletion, getExerciseVideo, getExerciseExplanation, getIdentityWorksheetEntries, getClientNotifications, getUnreadClientNotificationCount, markClientNotificationsRead } from '@/data/mockData';
 import { parseLocalDate } from '@/lib/dateUtils';
 import { cn } from '@/lib/utils';
 import { getActivityGreeting } from '@/lib/greeting';
@@ -84,7 +84,7 @@ export function ClientDashboard({ clientId, onViewSchedule, onViewProgress, onVi
 
   return (
     <motion.div 
-      className="min-h-screen pb-24"
+      className="min-h-screen pb-above-nav"
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -674,18 +674,17 @@ function FeedbackToBellaModal({ type, clientId, trainerName, onClose }: { type: 
 }
 
 function NotificationsToggleModal({ clientId, onClose }: { clientId: string; onClose: () => void }) {
-  const enabled = getClientNotificationEnabled(clientId);
-  const [value, setValue] = useState(enabled);
+  const level = getClientNotificationLevel(clientId);
+  const [value, setValue] = useState(level);
   const notifications = getClientNotifications(clientId);
 
   const handleOpen = () => {
     markClientNotificationsRead(clientId);
   };
 
-  const handleToggle = () => {
-    const next = !value;
+  const handleSelect = (next: 'all' | 'session-only' | 'off') => {
     setValue(next);
-    setClientNotificationEnabled(clientId, next);
+    setClientNotificationLevel(clientId, next);
   };
 
   return (
@@ -713,11 +712,17 @@ function NotificationsToggleModal({ clientId, onClose }: { clientId: string; onC
             ))}
           </ul>
         )}
-        <div className="flex items-center justify-between py-3">
-          <span className="text-[var(--foreground)]">Push notifications</span>
-          <button onClick={handleToggle} className={cn('w-12 h-7 rounded-lg flex items-center p-0.5 transition-colors', value ? 'bg-[var(--primary)] justify-end' : 'bg-white/50 justify-start')}>
-            <span className="block w-5 h-5 rounded-md bg-white shadow" />
-          </button>
+        <p className="text-sm font-medium text-[var(--foreground)] mb-2">Push notifications</p>
+        <div className="space-y-2">
+          {[
+            { id: 'all' as const, label: 'All (notes, programs, session reminders)' },
+            { id: 'session-only' as const, label: 'Session reminders only' },
+            { id: 'off' as const, label: 'All off (including session reminders)' },
+          ].map((opt) => (
+            <button key={opt.id} type="button" onClick={() => handleSelect(opt.id)} className={cn('w-full py-3 px-4 rounded-xl text-left text-sm transition-colors', value === opt.id ? 'bg-[var(--primary)] text-white' : 'bg-white/50 hover:bg-white/70')}>
+              {opt.label}
+            </button>
+          ))}
         </div>
       </motion.div>
     </>

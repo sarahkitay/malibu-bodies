@@ -110,7 +110,7 @@ export function ClientRoster({ onViewClient, onBack, initialFilter }: ClientRost
   ];
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-above-nav">
       <Header
         title="Client Roster"
         subtitle={`${filteredClients.length} clients`}

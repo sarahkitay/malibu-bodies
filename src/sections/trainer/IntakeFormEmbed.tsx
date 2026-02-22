@@ -82,19 +82,14 @@ export function IntakeFormEmbed({ trainerId, inviteId, newClient, onSuccess, pre
     e.preventDefault();
     if (preview) return;
     setError('');
-    const required = !fullName.trim() || !email.trim() || !program || !primaryGoal.trim() || !whyImportant.trim() ||
-      !typicalWeekday.trim() || !workoutTime || !daysPerWeek || !activityLevel || !signature.trim();
+    const required = !fullName.trim() || !email.trim() || !program || !phone.trim() || !signature.trim();
     const agreementsOk = agreementMedical && agreementResponsibility && agreementPersonalUse && agreementConsistency && agreementNoRefunds && agreementNoGuarantee;
     if (required || !agreementsOk) {
-      setError('Please fill in all required fields and confirm all agreements.');
+      setError('Please fill in name, email, phone, what you\'re applying for, sign, and confirm all agreements.');
       return;
     }
     if (program === 'in-person' && !inPersonOption) {
       setError('Please select 1:1 or Duet if applying for in-person training.');
-      return;
-    }
-    if (isCoaching && preparedToInvest2500 === null) {
-      setError('Please answer whether you are prepared to invest $2,500 for the 8-week virtual 1:1 coaching program.');
       return;
     }
     setSubmitting(true);
@@ -385,7 +380,12 @@ export function IntakeFormEmbed({ trainerId, inviteId, newClient, onSuccess, pre
       {/* Agreements */}
       <section>
         <h4 className="font-semibold text-[var(--foreground)] mb-3">Agreements & Confirmation</h4>
-        <p className="text-sm text-[var(--muted-foreground)] mb-3">Please confirm the following:</p>
+        <p className="text-sm text-[var(--muted-foreground)] mb-3">Required: confirm all and sign below.</p>
+        {!preview && (
+          <GlassButton type="button" variant="secondary" className="mb-3 w-full" onClick={() => { setAgreementMedical(true); setAgreementResponsibility(true); setAgreementPersonalUse(true); setAgreementConsistency(true); setAgreementNoRefunds(true); setAgreementNoGuarantee(true); }}>
+            Agree to all
+          </GlassButton>
+        )}
         <div className="space-y-2">
           {[
             { state: agreementMedical, set: setAgreementMedical, text: 'I have medical clearance to exercise and understand this is not medical advice.' },
@@ -396,7 +396,7 @@ export function IntakeFormEmbed({ trainerId, inviteId, newClient, onSuccess, pre
             { state: agreementNoGuarantee, set: setAgreementNoGuarantee, text: 'Submission does not guarantee acceptance.' },
           ].map(({ state, set, text }) => (
             <label key={text} className={cn('flex items-center gap-3 p-3 rounded-xl', !preview && 'cursor-pointer hover:bg-white/30')}>
-              <input type="checkbox" checked={state} onChange={(e) => set(e.target.checked)} disabled={preview} required />
+              <input type="checkbox" checked={state} onChange={(e) => set(e.target.checked)} disabled={preview} />
               <span className="text-sm">{text}</span>
             </label>
           ))}

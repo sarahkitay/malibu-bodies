@@ -22,7 +22,7 @@ export function IntakePublicPage({ onSubmitted }: { onSubmitted?: () => void }) 
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-[var(--background)] pb-12">
+      <div className="min-h-screen bg-[var(--background)] pb-12 pt-[max(1rem,env(safe-area-inset-top))]">
         <div className="max-w-lg mx-auto px-4 py-8">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-semibold text-[var(--foreground)] font-serif">
@@ -38,14 +38,24 @@ export function IntakePublicPage({ onSubmitted }: { onSubmitted?: () => void }) 
 
           <GlassCard className="p-6">
             {submitted ? (
-              <div className="text-center py-8">
+              <div className="text-center py-8 space-y-4">
                 <p className="text-lg font-medium text-[var(--foreground)]">Thank you!</p>
-                <p className="text-sm text-[var(--muted-foreground)] mt-2">Your application has been submitted. We will review within 3-5 business days.</p>
-                {onSubmitted && (
-                  <GlassButton variant="primary" className="mt-5" onClick={onSubmitted}>
-                    Continue to app
-                  </GlassButton>
-                )}
+                <p className="text-sm text-[var(--muted-foreground)]">Your application has been submitted. We will review within 3-5 business days.</p>
+                <div className="flex flex-col gap-3 mt-6">
+                  {onSubmitted && (
+                    <GlassButton variant="primary" fullWidth onClick={onSubmitted}>
+                      Continue to app
+                    </GlassButton>
+                  )}
+                  <a
+                    href="https://apps.apple.com/app/id1234567890"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center w-full px-4 py-3 rounded-2xl bg-[var(--foreground)] text-[var(--background)] font-medium text-sm hover:opacity-90"
+                  >
+                    Download the app
+                  </a>
+                </div>
               </div>
             ) : (
               <IntakeFormEmbed

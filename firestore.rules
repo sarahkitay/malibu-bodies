@@ -1,0 +1,13 @@
+rules_version = '2';
+// Malibu Bodies - Firestore Security Rules
+// App uses password + client passcode (AuthContext) for access control, not Firebase Auth.
+// Only the collections the app uses are allowed; everything else is denied.
+// For production: add Firebase Auth and restrict by request.auth.uid (e.g. trainer-only writes).
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /intakeSubmissions/{doc} {
+      allow read, write: if true;
+    }
+    // Deny any other path (no match = denied)
+  }
+}

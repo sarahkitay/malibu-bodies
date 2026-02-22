@@ -25,7 +25,7 @@ export function TrainerTodoListPage({ onBack }: TrainerTodoListPageProps) {
   };
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-above-nav">
       <Header title="To-Do List" subtitle="Your tasks" showBack onBack={onBack} />
 
       <div className="px-4 py-4 space-y-4 max-w-lg mx-auto">
