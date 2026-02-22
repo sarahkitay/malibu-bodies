@@ -354,6 +354,16 @@ export interface PastMembership {
   trainerId: string;
 }
 
+export interface ClientSpecificPackage {
+  id: string;
+  clientId: string;
+  trainerId: string;
+  name: string;
+  description?: string;
+  price: number;
+  paymentLink?: string;
+}
+
 /** Keys for Identity Rewrite Workshop answers (q1–q20 + declaration fields) */
 export interface IdentityWorksheetEntry {
   id: string;

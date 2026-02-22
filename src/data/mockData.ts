@@ -1,4 +1,4 @@
-import type { Client, Trainer, Assessment, ProgressNote, Booking, Affirmation, User, NutritionEntry, WeighIn, ProgressPhoto, ExerciseLibraryItem, IntakeForm, BlockedDay, TrainerTodo, BroadcastNotice, TrainerProgram, TrainerPersonalProgram, AssessmentSection, IntakeFormField, PastMembership, IdentityWorksheetEntry, ClientStar, ClientGift, ClientFeedback, ClientNotification, InspirationImage, ClientSelfAffirmation, MeasurementLog, SharedWorkoutProgram, ProgramWorkoutCompletion, StaffNutritionPlan, SavedClientProgram } from '@/types';
+import type { Client, Trainer, Assessment, ProgressNote, Booking, Affirmation, User, NutritionEntry, WeighIn, ProgressPhoto, ExerciseLibraryItem, IntakeForm, BlockedDay, TrainerTodo, BroadcastNotice, TrainerProgram, TrainerPersonalProgram, AssessmentSection, IntakeFormField, PastMembership, IdentityWorksheetEntry, ClientStar, ClientGift, ClientFeedback, ClientNotification, InspirationImage, ClientSelfAffirmation, MeasurementLog, SharedWorkoutProgram, ProgramWorkoutCompletion, StaffNutritionPlan, SavedClientProgram, ClientSpecificPackage } from '@/types';
 
 export const exerciseLibrary: ExerciseLibraryItem[] = [];
 
@@ -311,9 +311,12 @@ export function setTrainerPersonalProgram(program: TrainerPersonalProgram): void
 export const assessmentSections: AssessmentSection[] = [];
 export const intakeFormFields: IntakeFormField[] = [];
 export const pastMemberships: PastMembership[] = [
-  { id: 'pm1', name: '20 Sessions Pack', description: 'In-person training', price: 1200, squarePaymentUrl: 'https://checkout.square.site/merchant/ML9WBQJ90S78C/checkout/4ZSBL7P6U5IIVVEB2HVCZOVC', trainerId: 't1' },
-  { id: 'pm2', name: '10 Sessions Pack', description: 'In-person training', price: 650, squarePaymentUrl: 'https://checkout.square.site/merchant/ML9WBQJ90S78C/checkout/4ZSBL7P6U5IIVVEB2HVCZOVC', trainerId: 't1' },
+  { id: 'pm1', name: 'Virtual Coaching (Application Only)', description: '8-Week Virtual 1:1 Coaching Program', price: 2500, squarePaymentUrl: 'https://checkout.square.site/merchant/ML9WBQJ90S78C/checkout/4ZSBL7P6U5IIVVEB2HVCZOVC', trainerId: 't1' },
+  { id: 'pm2', name: 'Pre-Made 6-Week Training Program (PDF) - Gym Edition', description: 'Digital Program', price: 179, squarePaymentUrl: 'https://square.link/u/fqZ95WXu', trainerId: 't1' },
+  { id: 'pm3', name: 'Pre-Made 6-Week Training Program (PDF) - At-Home Edition', description: 'Digital Program', price: 179, squarePaymentUrl: 'https://square.link/u/fqZ95WXu', trainerId: 't1' },
+  { id: 'pm4', name: 'Custom Digital Training Program (Self-Guided, 6 Weeks)', description: 'Digital Program', price: 399, squarePaymentUrl: 'https://checkout.square.site/merchant/ML9WBQJ90S78C/checkout/4ZSBL7P6U5IIVVEB2HVCZOVC', trainerId: 't1' },
 ];
+export const clientSpecificPackages: ClientSpecificPackage[] = [];
 export const identityWorksheetEntries: IdentityWorksheetEntry[] = [];
 const clientNotificationPrefs: Record<string, boolean> = {};
 const clientDataSharingPrefs: Record<string, { progress: boolean; nutrition: boolean; photos: boolean }> = {};
@@ -406,6 +409,19 @@ export function addPastMembership(m: Omit<PastMembership, 'id'>): PastMembership
   const newM: PastMembership = { ...m, id };
   pastMemberships.push(newM);
   return newM;
+}
+
+export function getClientSpecificPackages(clientId: string): ClientSpecificPackage[] {
+  return clientSpecificPackages
+    .filter((p) => p.clientId === clientId)
+    .sort((a, b) => a.price - b.price);
+}
+
+export function addClientSpecificPackage(p: Omit<ClientSpecificPackage, 'id'>): ClientSpecificPackage {
+  const id = `csp${Date.now()}`;
+  const item: ClientSpecificPackage = { ...p, id };
+  clientSpecificPackages.push(item);
+  return item;
 }
 
 export function getIdentityWorksheetEntries(clientId: string): IdentityWorksheetEntry[] {

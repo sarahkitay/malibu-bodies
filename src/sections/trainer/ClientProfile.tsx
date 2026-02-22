@@ -16,7 +16,7 @@ import { DataSharingModal } from '@/sections/trainer/DataSharingModal';
 import { AddAffirmationModal } from '@/sections/trainer/AddAffirmationModal';
 import { AddProgressNoteModal } from '@/sections/trainer/AddProgressNoteModal';
 import { toast } from 'sonner';
-import { getClientById, getClientNotes, getClientBookings, getClientAffirmations, getClientNutritionEntries, getClientWeighIns, updateClientAccessCode, generateAccessCode, getClientProgressPhotos, addProgressPhoto, getClientAssessments, addAssessment, getClientIntakeForms, addClientIntakeForm, addClientStar, getClientStarCount, getClientGifts, getClientFeedbackForTrainer, addClientGift, setClientStatus, updateClientInfo, useClientSession, addSharedWorkoutProgram, getExerciseVideo, getExerciseExplanation, addNutritionEntry, addStaffNutritionPlan, getClientStaffNutritionPlans, getSavedClientPrograms, saveClientProgram } from '@/data/mockData';
+import { getClientById, getClientNotes, getClientBookings, getClientAffirmations, getClientNutritionEntries, getClientWeighIns, updateClientAccessCode, generateAccessCode, getClientProgressPhotos, addProgressPhoto, getClientAssessments, addAssessment, getClientIntakeForms, addClientIntakeForm, addClientStar, getClientStarCount, getClientGifts, getClientFeedbackForTrainer, addClientGift, setClientStatus, updateClientInfo, useClientSession, addSharedWorkoutProgram, getExerciseVideo, getExerciseExplanation, addNutritionEntry, addStaffNutritionPlan, getClientStaffNutritionPlans, getSavedClientPrograms, saveClientProgram, getClientSpecificPackages, addClientSpecificPackage } from '@/data/mockData';
 import { getIntakeSubmissions, uploadIntakeAttachment, type IntakeSubmissionData } from '@/lib/firebaseIntake';
 import { cn } from '@/lib/utils';
 import { formatDateForInput } from '@/lib/dateUtils';
@@ -1451,6 +1451,29 @@ function BookingTab({ clientId, trainerId }: { clientId: string; trainerId: stri
   const [, setRefresh] = useState(0);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const bookings = getClientBookings(clientId);
+  const clientPackages = getClientSpecificPackages(clientId);
+  const [packageName, setPackageName] = useState('');
+  const [packageDescription, setPackageDescription] = useState('');
+  const [packagePrice, setPackagePrice] = useState('');
+  const [packageLink, setPackageLink] = useState('');
+
+  const addPackage = () => {
+    const price = Number(packagePrice);
+    if (!packageName.trim() || !Number.isFinite(price) || price <= 0) return;
+    addClientSpecificPackage({
+      clientId,
+      trainerId,
+      name: packageName.trim(),
+      description: packageDescription.trim() || undefined,
+      price,
+      paymentLink: packageLink.trim() || undefined,
+    });
+    setPackageName('');
+    setPackageDescription('');
+    setPackagePrice('');
+    setPackageLink('');
+    setRefresh((r) => r + 1);
+  };
   
   return (
     <div className="space-y-4">
@@ -1511,6 +1534,52 @@ function BookingTab({ clientId, trainerId }: { clientId: string; trainerId: stri
           </GlassCard>
         )}
       </div>
+
+      <GlassCard>
+        <div className="p-4 space-y-3">
+          <h4 className="font-medium text-[var(--foreground)]">Client-specific in-person pricing</h4>
+          <p className="text-xs text-[var(--muted-foreground)]">These package amounts are only for this client.</p>
+          <GlassInput
+            label="Package name"
+            value={packageName}
+            onChange={(e) => setPackageName(e.target.value)}
+            placeholder="e.g. 12 Session Private Training Pack"
+          />
+          <GlassInput
+            label="Description (optional)"
+            value={packageDescription}
+            onChange={(e) => setPackageDescription(e.target.value)}
+            placeholder="e.g. In-person 1:1 training"
+          />
+          <GlassInput
+            label="Price ($)"
+            type="number"
+            min={0}
+            step={1}
+            value={packagePrice}
+            onChange={(e) => setPackagePrice(e.target.value)}
+          />
+          <GlassInput
+            label="Square payment link (optional)"
+            value={packageLink}
+            onChange={(e) => setPackageLink(e.target.value)}
+            placeholder="https://square.link/..."
+          />
+          <GlassButton variant="primary" fullWidth onClick={addPackage} disabled={!packageName.trim() || !packagePrice}>
+            Save Client Package
+          </GlassButton>
+          {clientPackages.length > 0 && (
+            <div className="space-y-2 pt-2 border-t border-[var(--border)]">
+              {clientPackages.map((p) => (
+                <div key={p.id} className="p-3 rounded-xl bg-white/40">
+                  <p className="font-medium text-sm">{p.name} - ${p.price}</p>
+                  {p.description && <p className="text-xs text-[var(--muted-foreground)]">{p.description}</p>}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </GlassCard>
       {showScheduleModal && (
         <ScheduleSessionModal
           trainerId={trainerId}

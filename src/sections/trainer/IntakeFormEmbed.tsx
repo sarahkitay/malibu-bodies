@@ -94,7 +94,7 @@ export function IntakeFormEmbed({ trainerId, inviteId, newClient, onSuccess, pre
       return;
     }
     if (isCoaching && preparedToInvest2500 === null) {
-      setError('Please answer whether you are prepared to invest $2,500 for 8 weeks of 1:1 coaching.');
+      setError('Please answer whether you are prepared to invest $2,500 for the 8-week virtual 1:1 coaching program.');
       return;
     }
     setSubmitting(true);
@@ -162,7 +162,12 @@ export function IntakeFormEmbed({ trainerId, inviteId, newClient, onSuccess, pre
       {/* Header */}
       <div className="text-sm text-[var(--muted-foreground)] space-y-2">
         <p>This application is required for custom programming, virtual coaching, and in-person training.</p>
-        <p>Pre-made programs are purchased separately and delivered automatically. They do not require an application.</p>
+        <div className="p-3 rounded-xl bg-white/40 space-y-1">
+          <p className="font-medium text-[var(--foreground)]">Current Digital Pricing</p>
+          <p>Virtual Coaching (Application Only): 8-Week Virtual 1:1 Coaching Program - $2,500</p>
+          <p>Pre-Made 6-Week Training Program (PDF): Gym Edition - $179 | At-Home Edition - $179</p>
+          <p>Custom Digital Training Program (Self-Guided, 6 Weeks) - $399</p>
+        </div>
         <p>Please answer honestly. I personally review every application and reserve the right to accept or decline based on fit.</p>
       </div>
 
@@ -186,8 +191,8 @@ export function IntakeFormEmbed({ trainerId, inviteId, newClient, onSuccess, pre
         <p className="text-sm text-[var(--muted-foreground)] mb-2">Select ONE primary option:</p>
         <div className="space-y-2">
           {[
-            { value: 'bundle', label: 'Custom Training + Meal Plan Bundle (Self-Guided – 6 Weeks)' },
-            { value: 'coaching', label: 'Virtual 1:1 Coaching (8-Week Program – Application Only)' },
+            { value: 'bundle', label: 'Custom Digital Training Program (Self-Guided, 6 Weeks) - $399' },
+            { value: 'coaching', label: 'Virtual Coaching (Application Only) - 8-Week Virtual 1:1 Coaching Program - $2,500' },
             { value: 'in-person', label: 'In-Person Personal Training (Consultation Required)' },
           ].map((o) => (
             <label key={o.value} className={cn('flex items-center gap-3 p-3 rounded-xl', !preview && 'cursor-pointer hover:bg-white/30')}>
@@ -367,7 +372,7 @@ export function IntakeFormEmbed({ trainerId, inviteId, newClient, onSuccess, pre
             <GlassTextArea label="How will your life look different if this works exactly as intended?" value={lifeDifferentIfWorks} onChange={(e) => setLifeDifferentIfWorks(e.target.value)} rows={3} disabled={preview} />
             <GlassTextArea label="This program requires consistent execution, honest check-ins, and direct feedback. Where do you anticipate resistance coming up for you?" value={anticipateResistance} onChange={(e) => setAnticipateResistance(e.target.value)} rows={2} disabled={preview} />
             <div>
-              <label className="block text-sm font-medium text-[var(--muted-foreground)] mb-2">Are you prepared to invest $2,500 for 8 weeks of 1:1 coaching if accepted? *</label>
+              <label className="block text-sm font-medium text-[var(--muted-foreground)] mb-2">Are you prepared to invest $2,500 for the 8-week virtual 1:1 coaching program if accepted? *</label>
               <div className="flex gap-2">
                 <button type="button" onClick={() => !preview && setPreparedToInvest2500(true)} className={cn('px-4 py-2 rounded-xl text-sm', preparedToInvest2500 === true ? 'bg-[var(--primary)] text-white' : 'bg-white/50')}>Yes</button>
                 <button type="button" onClick={() => !preview && setPreparedToInvest2500(false)} className={cn('px-4 py-2 rounded-xl text-sm', preparedToInvest2500 === false ? 'bg-[var(--primary)] text-white' : 'bg-white/50')}>No</button>
