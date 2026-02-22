@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, TrendingUp, Target, Award, ChevronRight, Dumbbell, Heart, MessageCircle, Star, Gift, Flame, Apple, Scale, ClipboardList, Video, X, Smile, Sparkles } from 'lucide-react';
+import { Calendar, TrendingUp, Target, Award, ChevronRight, Dumbbell, Heart, MessageCircle, Star, Gift, Flame, Apple, Scale, ClipboardList, Video, X, Smile, Sparkles, Activity } from 'lucide-react';
 import { GlassCard } from '@/components/glass/GlassCard';
 import { GlassButton } from '@/components/glass/GlassButton';
 import { GlassBadge } from '@/components/glass/GlassBadge';
@@ -9,6 +9,7 @@ import { WelcomeHeader } from '@/components/Header';
 import { getClientById, getClientBookings, getAffirmationOfTheDay, updateBookingStatus, requestClientReschedule, isBookingWithin24Hours, updateClientGoals, getClientNotificationEnabled, setClientNotificationEnabled, addClientFeedback, getClientStarCount, getClientGifts, getProgressStreak, getSharedWorkoutPrograms, getProgramCompletion, setProgramWorkoutCompletion, getExerciseVideo, getExerciseExplanation, getIdentityWorksheetEntries, getClientNotifications, getUnreadClientNotificationCount, markClientNotificationsRead } from '@/data/mockData';
 import { parseLocalDate } from '@/lib/dateUtils';
 import { cn } from '@/lib/utils';
+import { getActivityGreeting } from '@/lib/greeting';
 
 interface ClientDashboardProps {
   clientId: string;
@@ -19,6 +20,17 @@ interface ClientDashboardProps {
 }
 
 const PREBUILT_GOALS = ['Build muscle', 'Lose weight', 'Gain strength', 'Longevity', 'Improve flexibility', 'Increase energy', 'Better posture', 'Stress relief'];
+
+function getGoalIcon(goal: string) {
+  const g = goal.toLowerCase();
+  if (g.includes('muscle') || g.includes('strength')) return Dumbbell;
+  if (g.includes('weight') || g.includes('ton')) return Scale;
+  if (g.includes('energy') || g.includes('endurance') || g.includes('active')) return Flame;
+  if (g.includes('posture') || g.includes('mobility') || g.includes('flex')) return Activity;
+  if (g.includes('stress') || g.includes('mind')) return Heart;
+  if (g.includes('nutrition') || g.includes('food')) return Apple;
+  return Target;
+}
 
 export function ClientDashboard({ clientId, onViewSchedule, onViewProgress, onViewIdentitySheet }: ClientDashboardProps) {
   const [, setRefreshKey] = useState(0);
@@ -39,6 +51,9 @@ export function ClientDashboard({ clientId, onViewSchedule, onViewProgress, onVi
   if (!client) return null;
   const clientBookings = getClientBookings(client.id);
   const upcomingBooking = clientBookings.find(b => parseLocalDate(b.date) >= new Date(new Date().setHours(0, 0, 0, 0)) && b.status !== 'cancelled');
+  const todayKey = new Date().toDateString();
+  const completedWorkoutToday = clientBookings.some((b) => parseLocalDate(b.date).toDateString() === todayKey && b.status === 'completed');
+  const hasWorkoutToday = clientBookings.some((b) => parseLocalDate(b.date).toDateString() === todayKey && b.status !== 'cancelled');
   const affirmation = getAffirmationOfTheDay(clientId);
   const within24h = upcomingBooking ? isBookingWithin24Hours(upcomingBooking) : false;
   const starCount = getClientStarCount(clientId);
@@ -80,6 +95,7 @@ export function ClientDashboard({ clientId, onViewSchedule, onViewProgress, onVi
         avatar={client.avatar}
         notificationCount={getUnreadClientNotificationCount(clientId)}
         onNotificationClick={() => setShowNotifications(true)}
+        activityMessage={getActivityGreeting(hasWorkoutToday, completedWorkoutToday)}
       />
 
       {getUnreadClientNotificationCount(clientId) > 0 && (() => {
@@ -398,7 +414,9 @@ export function ClientDashboard({ clientId, onViewSchedule, onViewProgress, onVi
           
           <GlassCard>
             <div className="p-4 space-y-3">
-              {client.goals?.map((goal, index) => (
+              {client.goals?.map((goal, index) => {
+                const GoalIcon = getGoalIcon(goal);
+                return (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, x: -10 }}
@@ -407,11 +425,12 @@ export function ClientDashboard({ clientId, onViewSchedule, onViewProgress, onVi
                   className="flex items-center gap-3"
                 >
                   <div className="w-8 h-8 rounded-xl bg-[var(--primary)]/10 flex items-center justify-center flex-shrink-0">
-                    <Target className="w-4 h-4 text-[var(--primary)]" />
+                    <GoalIcon className="w-4 h-4 text-[var(--primary)]" />
                   </div>
                   <span className="text-[var(--foreground)]">{goal}</span>
                 </motion.div>
-              ))}
+                );
+              })}
             </div>
           </GlassCard>
         </motion.div>

@@ -90,7 +90,7 @@ function TrainerProfilePage({ onLogout, onNavigate, onNavigateToClients }: { onL
               onChange={handleTrainerAvatarChange}
             />
             <motion.div className="relative inline-block" whileHover={{ scale: 1.05 }}>
-              <div className="w-24 h-24 rounded-3xl overflow-hidden ring-4 ring-white/50 shadow-xl mx-auto">
+              <div className="w-32 h-24 rounded-2xl overflow-hidden ring-4 ring-white/50 shadow-xl mx-auto">
                 {currentUser.avatar ? (
                   <img src={currentUser.avatar} alt={currentUser.name} className="w-full h-full object-cover" key={avatarRefresh} />
                 ) : (

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Calendar, TrendingUp, Clock, ChevronRight, Plus, ClipboardList, ListTodo, Dumbbell } from 'lucide-react';
+import { Calendar, Clock, ChevronRight, Plus, ClipboardList, ListTodo, Dumbbell, Flame } from 'lucide-react';
 import { GlassCard } from '@/components/glass/GlassCard';
 import { GlassButton } from '@/components/glass/GlassButton';
 import { WelcomeHeader } from '@/components/Header';
@@ -11,6 +11,7 @@ import { NotificationsPanel } from '@/sections/trainer/NotificationsPanel';
 import { currentUser, getTrainerClients, bookings, getNotificationsForTrainer, getTrainerPrograms, getTrainerProgram } from '@/data/mockData';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
+import { getActivityGreeting } from '@/lib/greeting';
 
 interface TrainerDashboardProps {
   onViewClients: () => void;
@@ -40,11 +41,13 @@ export function TrainerDashboard({ onViewClients, onViewClient, onViewSchedule, 
   const totalSessions = activeClients.reduce((acc, c) => acc + c.totalSessions, 0);
   const remainingSessions = activeClients.reduce((acc, c) => acc + c.sessionsRemaining, 0);
   const usedSessions = totalSessions - remainingSessions;
+  const completedSessionsToday = todaysBookings.filter((b) => b.status === 'completed').length;
+  const hasWorkoutToday = todaysBookings.length > 0;
 
   const stats = [
-    { label: 'Active Clients', value: activeClients.length, icon: Users, onClick: onViewClients },
-    { label: "Today's Sessions", value: todaysBookings.length, icon: Calendar, onClick: onViewSchedule },
-    { label: 'Sessions Used', value: usedSessions, icon: TrendingUp },
+    { label: 'Active Clients', value: activeClients.length, icon: ClipboardList, onClick: onViewClients },
+    { label: "Today's Sessions", value: todaysBookings.length, icon: Dumbbell, onClick: onViewSchedule },
+    { label: 'Sessions Used', value: usedSessions, icon: Flame },
   ];
 
   return (
@@ -55,6 +58,7 @@ export function TrainerDashboard({ onViewClients, onViewClient, onViewSchedule, 
         avatar={currentUser.avatar}
         notificationCount={getNotificationsForTrainer(trainerId).length}
         onNotificationClick={() => setShowNotifications(true)}
+        activityMessage={getActivityGreeting(hasWorkoutToday, completedSessionsToday > 0)}
       />
 
       <motion.div

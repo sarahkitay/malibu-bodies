@@ -29,7 +29,7 @@ export function Header({
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        'sticky top-0 z-40 px-4 py-4 glass-strong',
+        'sticky top-0 z-40 px-4 pb-4 pt-[calc(0.75rem+env(safe-area-inset-top))] glass-strong',
         className
       )}
     >
@@ -85,14 +85,15 @@ interface WelcomeHeaderProps {
   avatar?: string;
   notificationCount?: number;
   onNotificationClick?: () => void;
+  activityMessage?: string;
 }
 
-export function WelcomeHeader({ name, role, avatar, notificationCount = 0, onNotificationClick }: WelcomeHeaderProps) {
+export function WelcomeHeader({ name, role, avatar, notificationCount = 0, onNotificationClick, activityMessage }: WelcomeHeaderProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="px-4 py-6"
+      className="px-4 pb-5 pt-[calc(1rem+env(safe-area-inset-top))]"
     >
       <div className="flex items-center justify-between max-w-lg mx-auto">
         <div className="flex items-center gap-4">
@@ -100,7 +101,7 @@ export function WelcomeHeader({ name, role, avatar, notificationCount = 0, onNot
             className="relative"
             whileHover={{ scale: 1.05 }}
           >
-            <div className="w-14 h-14 rounded-2xl overflow-hidden ring-2 ring-white/50 shadow-lg">
+            <div className="h-16 w-20 rounded-xl overflow-hidden ring-2 ring-white/50 shadow-lg">
               {avatar ? (
                 <img src={avatar} alt={name} className="w-full h-full object-cover" />
               ) : (
@@ -112,7 +113,7 @@ export function WelcomeHeader({ name, role, avatar, notificationCount = 0, onNot
             <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-md border-2 border-white" />
           </motion.div>
           <div>
-            <p className="text-sm text-[var(--muted-foreground)]">{getGreetingText()},</p>
+            <p className="text-sm text-[var(--muted-foreground)]">{activityMessage || `${getGreetingText()},`}</p>
             <h1 className="text-2xl font-semibold text-[var(--foreground)] font-serif">
               {getFirstName(name)}
             </h1>

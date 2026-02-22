@@ -13,8 +13,8 @@ export function ThemePicker() {
       <motion.button
         onClick={openThemePicker}
         className={cn(
-          "fixed z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full glass-strong flex items-center justify-center text-[var(--primary)] shadow-lg hover:shadow-xl transition-shadow",
-          isMobile ? "top-4 right-4" : "bottom-6 right-6"
+          "fixed z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-xl glass-strong flex items-center justify-center text-[var(--primary)] shadow-lg hover:shadow-xl transition-shadow",
+          isMobile ? "bottom-[calc(5.75rem+env(safe-area-inset-bottom))] right-4" : "bottom-6 right-6"
         )}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -40,8 +40,8 @@ export function ThemePicker() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: isMobile ? -10 : 20 }}
               className={cn(
-                "fixed z-50 w-80 max-w-[calc(100vw-2rem)] max-h-[min(78vh,640px)] overflow-y-auto overscroll-contain glass-strong rounded-3xl p-6 shadow-2xl",
-                isMobile ? "top-20 right-4" : "bottom-24 right-6"
+                "fixed z-50 w-80 max-w-[calc(100vw-2rem)] max-h-[min(70vh,560px)] overflow-y-auto overscroll-contain glass-strong rounded-2xl p-5 shadow-2xl",
+                isMobile ? "bottom-[calc(9.5rem+env(safe-area-inset-bottom))] right-4" : "bottom-24 right-6"
               )}
             >
               <div className="flex items-center justify-between mb-6">

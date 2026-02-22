@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Users, Calendar, MessageSquare, User, Home, CreditCard, Dumbbell, LayoutGrid } from 'lucide-react';
+import { Calendar, MessageSquare, User, CreditCard, Dumbbell, LayoutGrid, Flame, ClipboardList, Sparkles, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export type NavTab = 'dashboard' | 'clients' | 'schedule' | 'messages' | 'profile' | 'memberships' | 'bookings' | 'progress' | 'exercises' | 'inspiration';
@@ -12,8 +12,8 @@ interface BottomNavProps {
 }
 
 const trainerTabs: { id: NavTab; label: string; icon: React.ElementType }[] = [
-  { id: 'dashboard', label: 'Home', icon: Home },
-  { id: 'clients', label: 'Clients', icon: Users },
+  { id: 'dashboard', label: 'Home', icon: Flame },
+  { id: 'clients', label: 'Clients', icon: ClipboardList },
   { id: 'schedule', label: 'Schedule', icon: Calendar },
   { id: 'exercises', label: 'Exercises', icon: Dumbbell },
   { id: 'messages', label: 'Notes', icon: MessageSquare },
@@ -21,11 +21,11 @@ const trainerTabs: { id: NavTab; label: string; icon: React.ElementType }[] = [
 ];
 
 const clientTabs: { id: NavTab; label: string; icon: React.ElementType }[] = [
-  { id: 'dashboard', label: 'Home', icon: Home },
+  { id: 'dashboard', label: 'Home', icon: Sparkles },
   { id: 'schedule', label: 'Bookings', icon: Calendar },
   { id: 'inspiration', label: 'Inspire', icon: LayoutGrid },
   { id: 'memberships', label: 'Memberships', icon: CreditCard },
-  { id: 'messages', label: 'Progress', icon: MessageSquare },
+  { id: 'messages', label: 'Progress', icon: TrendingUp },
   { id: 'profile', label: 'Profile', icon: User },
 ];
 
@@ -38,7 +38,7 @@ export function BottomNav({ activeTab, onTabChange, role }: BottomNavProps) {
       animate={{ y: 0 }}
       className="fixed bottom-0 left-0 right-0 z-50 px-4 pb-safe"
     >
-      <div className="glass-nav rounded-t-3xl mx-auto max-w-md border-t border-white/40 py-2 px-3 pb-[calc(8px+env(safe-area-inset-bottom))] shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
+      <div className="glass-nav rounded-t-2xl mx-auto max-w-md border-t border-white/40 py-2 px-3 pb-[calc(8px+env(safe-area-inset-bottom))] shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
         <div className="flex items-center justify-around">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
@@ -49,7 +49,7 @@ export function BottomNav({ activeTab, onTabChange, role }: BottomNavProps) {
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
                 className={cn(
-                  'relative flex flex-col items-center gap-1 py-2 px-3 rounded-xl transition-colors min-h-[44px] justify-center',
+                  'relative flex flex-col items-center gap-1 py-2 px-3 rounded-lg transition-colors min-h-[44px] justify-center',
                   isActive ? 'text-[var(--primary)]' : 'text-[var(--muted-foreground)]'
                 )}
                 whileTap={{ scale: 0.97 }}
@@ -58,7 +58,7 @@ export function BottomNav({ activeTab, onTabChange, role }: BottomNavProps) {
                 {isActive && (
                   <motion.div
                     layoutId="activeTab"
-                    className="absolute inset-0 bg-[var(--primary)]/8 rounded-xl -z-0"
+                    className="absolute inset-0 bg-[var(--primary)]/8 rounded-lg -z-0"
                     transition={{ type: 'spring', bounce: 0.15, duration: 0.4 }}
                   />
                 )}

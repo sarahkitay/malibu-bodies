@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --radius-card: 22px;
-  --radius-button: 17px;
-  --radius-chip: 12px;
+  --radius-card: 18px;
+  --radius-button: 14px;
+  --radius-chip: 10px;
   --background: #faf8f5;
   --foreground: #1a1816;
   --card: rgba(255, 255, 255, 0.7);
@@ -50,11 +50,18 @@
   --login-grad-top: rgba(248, 220, 232, 0.62);
   --login-grad-mid: rgba(253, 241, 247, 0.44);
   --login-grad-bottom: rgba(255, 255, 255, 0.9);
+  --bg-soft-top: #f7f1eb;
+  --bg-soft-mid: #fbf8f5;
+  --bg-soft-bottom: #f6f1ea;
 }
 
 /* Light mode: ultra-faint warm gradient (top warmer than bottom) */
 html:not(.dark) body {
-  background: linear-gradient(180deg, #fcf9f6 0%, #faf8f5 50%, #f8f5f1 100%) !important;
+  background: linear-gradient(180deg, var(--bg-soft-top) 0%, var(--bg-soft-mid) 52%, var(--bg-soft-bottom) 100%) !important;
+  background-attachment: fixed;
+}
+html.dark body {
+  background: linear-gradient(180deg, var(--bg-soft-top) 0%, var(--bg-soft-mid) 52%, var(--bg-soft-bottom) 100%) !important;
   background-attachment: fixed;
 }
 /* 1–2% grain overlay - tactile quality */
@@ -126,6 +133,9 @@ html.dark .glass-input {
   --login-grad-top: rgba(245, 221, 232, 0.6);
   --login-grad-mid: rgba(242, 236, 242, 0.42);
   --login-grad-bottom: rgba(255, 255, 255, 0.9);
+  --bg-soft-top: #edf4ee;
+  --bg-soft-mid: #f6fbf7;
+  --bg-soft-bottom: #e6f0e8;
 }
 
 [data-theme="blush"] {
@@ -144,6 +154,9 @@ html.dark .glass-input {
   --login-grad-top: rgba(249, 216, 228, 0.64);
   --login-grad-mid: rgba(252, 237, 245, 0.46);
   --login-grad-bottom: rgba(255, 255, 255, 0.9);
+  --bg-soft-top: #f6e8ec;
+  --bg-soft-mid: #fcf7f9;
+  --bg-soft-bottom: #efdee4;
 }
 
 [data-theme="ocean"] {
@@ -162,6 +175,9 @@ html.dark .glass-input {
   --login-grad-top: rgba(243, 220, 233, 0.6);
   --login-grad-mid: rgba(243, 236, 245, 0.42);
   --login-grad-bottom: rgba(255, 255, 255, 0.9);
+  --bg-soft-top: #e6eff5;
+  --bg-soft-mid: #f6f9fc;
+  --bg-soft-bottom: #dce9f2;
 }
 
 [data-theme="lavender"] {
@@ -180,6 +196,9 @@ html.dark .glass-input {
   --login-grad-top: rgba(245, 222, 238, 0.6);
   --login-grad-mid: rgba(246, 238, 248, 0.42);
   --login-grad-bottom: rgba(255, 255, 255, 0.9);
+  --bg-soft-top: #eeeaf6;
+  --bg-soft-mid: #faf8fd;
+  --bg-soft-bottom: #e4ddf2;
 }
 
 [data-theme="peach"] {
@@ -198,6 +217,9 @@ html.dark .glass-input {
   --login-grad-top: rgba(248, 222, 229, 0.6);
   --login-grad-mid: rgba(250, 238, 242, 0.44);
   --login-grad-bottom: rgba(255, 255, 255, 0.9);
+  --bg-soft-top: #f6eee8;
+  --bg-soft-mid: #fdf9f6;
+  --bg-soft-bottom: #f2e5dc;
 }
 
 [data-theme="mint"] {
@@ -216,6 +238,9 @@ html.dark .glass-input {
   --login-grad-top: rgba(219, 243, 236, 0.62);
   --login-grad-mid: rgba(241, 251, 248, 0.45);
   --login-grad-bottom: rgba(255, 255, 255, 0.9);
+  --bg-soft-top: #e6f5f1;
+  --bg-soft-mid: #f8fcfb;
+  --bg-soft-bottom: #ddf0ea;
 }
 
 [data-theme="ruby"] {
@@ -234,6 +259,9 @@ html.dark .glass-input {
   --login-grad-top: rgba(243, 223, 229, 0.62);
   --login-grad-mid: rgba(252, 241, 245, 0.45);
   --login-grad-bottom: rgba(255, 255, 255, 0.9);
+  --bg-soft-top: #f4e7eb;
+  --bg-soft-mid: #fbf6f8;
+  --bg-soft-bottom: #efdde3;
 }
 
 [data-theme="twilight"] {
@@ -252,12 +280,18 @@ html.dark .glass-input {
   --login-grad-top: rgba(224, 230, 247, 0.62);
   --login-grad-mid: rgba(244, 246, 253, 0.45);
   --login-grad-bottom: rgba(255, 255, 255, 0.9);
+  --bg-soft-top: #e7ebf7;
+  --bg-soft-mid: #f8f9fd;
+  --bg-soft-bottom: #dde4f5;
 }
 
 html.dark {
   --login-grad-top: rgba(74, 52, 62, 0.45);
   --login-grad-mid: rgba(52, 36, 44, 0.35);
   --login-grad-bottom: rgba(24, 18, 24, 0.7);
+  --bg-soft-top: #19191d;
+  --bg-soft-mid: #121217;
+  --bg-soft-bottom: #0d0d12;
 }
 
 @layer base {
@@ -460,6 +494,11 @@ html.dark {
     --radius: 0;
   }
 }
+
+/* Slightly tighter shape language across controls */
+.rounded-3xl { border-radius: 1.25rem !important; }
+.rounded-2xl { border-radius: 0.9rem !important; }
+.rounded-xl { border-radius: 0.75rem !important; }
 
 /* Immersive = Glass Mode: super glossy full background & cards */
 html[data-bg-style="gradient"] { --bg-gradient: linear-gradient(160deg, #e8ddd0 0%, #d4c4b0 25%, #c4a77d 50%, #b8966a 75%, #a67c52 100%); }
