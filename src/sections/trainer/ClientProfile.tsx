@@ -18,6 +18,7 @@ import { AddProgressNoteModal } from '@/sections/trainer/AddProgressNoteModal';
 import { toast } from 'sonner';
 import { getClientById, getClientNotes, getClientBookings, getClientAffirmations, getClientNutritionEntries, getClientWeighIns, updateClientAccessCode, generateAccessCode, getClientProgressPhotos, addProgressPhoto, getClientAssessments, addAssessment, getClientIntakeForms, addClientIntakeForm, addClientStar, getClientStarCount, getClientGifts, getClientFeedbackForTrainer, addClientGift, setClientStatus, updateClientInfo, useClientSession, addSharedWorkoutProgram, getExerciseVideo, getExerciseExplanation, addNutritionEntry, addStaffNutritionPlan, getClientStaffNutritionPlans, getSavedClientPrograms, saveClientProgram, getClientSpecificPackages, addClientSpecificPackage } from '@/data/mockData';
 import { getIntakeSubmissions, uploadIntakeAttachment, type IntakeSubmissionData } from '@/lib/firebaseIntake';
+import { generateSquarePaymentLink } from '@/lib/squarePayments';
 import { cn } from '@/lib/utils';
 import { formatDateForInput } from '@/lib/dateUtils';
 import type { Client } from '@/types';
@@ -1456,6 +1457,7 @@ function BookingTab({ clientId, trainerId }: { clientId: string; trainerId: stri
   const [packageDescription, setPackageDescription] = useState('');
   const [packagePrice, setPackagePrice] = useState('');
   const [packageLink, setPackageLink] = useState('');
+  const [generatingLink, setGeneratingLink] = useState(false);
 
   const addPackage = () => {
     const price = Number(packagePrice);
@@ -1473,6 +1475,24 @@ function BookingTab({ clientId, trainerId }: { clientId: string; trainerId: stri
     setPackagePrice('');
     setPackageLink('');
     setRefresh((r) => r + 1);
+  };
+
+  const handleGenerateSquareLink = async () => {
+    const amount = Number(packagePrice);
+    if (!packageName.trim() || !Number.isFinite(amount) || amount <= 0) {
+      toast.error('Enter package name and valid price first');
+      return;
+    }
+    setGeneratingLink(true);
+    try {
+      const url = await generateSquarePaymentLink(packageName.trim(), amount);
+      setPackageLink(url);
+      toast.success('Square payment link generated');
+    } catch (error) {
+      toast.error((error as Error).message || 'Failed to generate Square link');
+    } finally {
+      setGeneratingLink(false);
+    }
   };
   
   return (
@@ -1565,6 +1585,14 @@ function BookingTab({ clientId, trainerId }: { clientId: string; trainerId: stri
             onChange={(e) => setPackageLink(e.target.value)}
             placeholder="https://square.link/..."
           />
+          <GlassButton
+            size="sm"
+            variant="secondary"
+            onClick={handleGenerateSquareLink}
+            disabled={generatingLink || !packageName.trim() || !packagePrice}
+          >
+            {generatingLink ? 'Generating...' : 'Generate with Square'}
+          </GlassButton>
           <GlassButton variant="primary" fullWidth onClick={addPackage} disabled={!packageName.trim() || !packagePrice}>
             Save Client Package
           </GlassButton>

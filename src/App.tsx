@@ -29,7 +29,8 @@ import { ClientProfile } from '@/sections/client/ClientProfile';
 import { ClientMemberships } from '@/sections/client/ClientMemberships';
 import { InspirationBoard } from '@/sections/client/InspirationBoard';
 import { IntakePublicPage } from '@/sections/IntakePublicPage';
-import { Toaster } from 'sonner';
+import { Toaster, toast } from 'sonner';
+import { generateSquarePaymentLink } from '@/lib/squarePayments';
 import './App.css';
 
 function isIntakePublicRoute(): boolean {
@@ -613,6 +614,7 @@ function RepurchaseOptionsModal({ trainerId, onClose }: { trainerId: string; onC
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [squareUrl, setSquareUrl] = useState('');
+  const [generatingLink, setGeneratingLink] = useState(false);
 
   const handleAdd = () => {
     if (name.trim() && price && squareUrl.trim()) {
@@ -627,6 +629,25 @@ function RepurchaseOptionsModal({ trainerId, onClose }: { trainerId: string; onC
       setDescription('');
       setPrice('');
       setSquareUrl('');
+    }
+  };
+
+  const handleGenerateSquareLink = async () => {
+    const amount = Number(price);
+    if (!name.trim() || !Number.isFinite(amount) || amount <= 0) {
+      toast.error('Enter package name and valid price first');
+      return;
+    }
+
+    setGeneratingLink(true);
+    try {
+      const url = await generateSquarePaymentLink(name.trim(), amount);
+      setSquareUrl(url);
+      toast.success('Square payment link generated');
+    } catch (error) {
+      toast.error((error as Error).message || 'Failed to generate Square link');
+    } finally {
+      setGeneratingLink(false);
     }
   };
 
@@ -655,6 +676,15 @@ function RepurchaseOptionsModal({ trainerId, onClose }: { trainerId: string; onC
           <div>
             <label className="block text-sm font-medium mb-1">Square payment URL</label>
             <input value={squareUrl} onChange={(e) => setSquareUrl(e.target.value)} placeholder="https://checkout.square.site/..." className="w-full px-4 py-3 rounded-2xl bg-white/50 border border-white/60" />
+            <GlassButton
+              size="sm"
+              variant="secondary"
+              className="mt-2"
+              onClick={handleGenerateSquareLink}
+              disabled={generatingLink || !name.trim() || !price}
+            >
+              {generatingLink ? 'Generating...' : 'Generate with Square'}
+            </GlassButton>
           </div>
           <GlassButton variant="primary" fullWidth onClick={handleAdd} disabled={!name.trim() || !price || !squareUrl.trim()}>Add option</GlassButton>
         </div>
