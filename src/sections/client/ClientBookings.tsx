@@ -5,9 +5,9 @@ import { GlassCard } from '@/components/glass/GlassCard';
 import { GlassButton } from '@/components/glass/GlassButton';
 import { GlassBadge } from '@/components/glass/GlassBadge';
 import { Header } from '@/components/Header';
-import { getClientById, getClientBookings, addBooking, updateBookingStatus, acceptBookingSuggestion, requestClientReschedule, isBookingWithin24Hours } from '@/data/mockData';
+import { getClientById, getClientBookings, addBooking, updateBookingStatus, acceptBookingSuggestion, requestClientReschedule, isBookingWithin24Hours, getTrainerAvailabilityHours, DEFAULT_BOOKING_TIMES } from '@/data/mockData';
 import { cn } from '@/lib/utils';
-import { parseLocalDate } from '@/lib/dateUtils';
+import { parseLocalDate, parseDateTimeInput } from '@/lib/dateUtils';
 
 interface ClientBookingsProps {
   clientId: string;
@@ -311,6 +311,7 @@ export function ClientBookings({ clientId, onBack }: ClientBookingsProps) {
         {rescheduleFor && (
           <ClientRescheduleModal
             bookingId={rescheduleFor.id}
+            clientId={clientId}
             onClose={() => setRescheduleFor(null)}
             onSuccess={() => setRescheduleFor(null)}
           />
@@ -320,15 +321,27 @@ export function ClientBookings({ clientId, onBack }: ClientBookingsProps) {
   );
 }
 
-function ClientRescheduleModal({ bookingId, onClose, onSuccess }: { bookingId: string; onClose: () => void; onSuccess: () => void }) {
+function ClientRescheduleModal({ bookingId, clientId, onClose, onSuccess }: { bookingId: string; clientId: string; onClose: () => void; onSuccess: () => void }) {
   const [date, setDate] = useState('');
-  const [time, setTime] = useState('09:00');
-  const times = ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+  const [time, setTime] = useState('');
+  const [typeIn, setTypeIn] = useState('');
+  const client = getClientById(clientId);
+  const trainerId = client?.trainerId ?? 't1';
+  const baseTimes = (getTrainerAvailabilityHours(trainerId) ?? DEFAULT_BOOKING_TIMES).slice();
+  const times = time && !baseTimes.includes(time) ? [time, ...baseTimes].sort() : baseTimes;
 
   const handleRequest = () => {
     if (date && time) {
       requestClientReschedule(bookingId, date, time);
       onSuccess();
+    }
+  };
+
+  const applyTypeIn = () => {
+    const parsed = parseDateTimeInput(typeIn);
+    if (parsed) {
+      setDate(parsed.date);
+      setTime(parsed.time);
     }
   };
 
@@ -342,15 +355,25 @@ function ClientRescheduleModal({ bookingId, onClose, onSuccess }: { bookingId: s
         </div>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2">Date</label>
-            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full px-4 py-3 rounded-2xl bg-white/50 border border-white/60" />
+            <label className="block text-sm font-medium text-[var(--foreground)]/70 mb-1.5">Date</label>
+            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full px-3 py-2.5 rounded-xl text-sm bg-white/50 border border-white/60" />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Time</label>
-            <div className="flex flex-wrap gap-2">
-              {times.map((t) => (
-                <button key={t} onClick={() => setTime(t)} className={cn('px-4 py-2 rounded-xl text-sm', time === t ? 'bg-[var(--primary)] text-white' : 'bg-white/50')}>{t}</button>
-              ))}
+            <label className="block text-sm font-medium text-[var(--foreground)]/70 mb-1.5">Time</label>
+            <select value={time} onChange={(e) => setTime(e.target.value)} className="w-full px-3 py-2.5 rounded-xl text-sm bg-white/50 border border-white/60 text-[var(--foreground)]">
+              <option value="">Select time</option>
+              {times.map((t) => {
+                const [h, m] = t.split(':').map(Number);
+                const label = h < 12 ? `${h}:${String(m).padStart(2, '0')} AM` : h === 12 ? `12:${String(m).padStart(2, '0')} PM` : `${h - 12}:${String(m).padStart(2, '0')} PM`;
+                return <option key={t} value={t}>{label}</option>;
+              })}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-[var(--foreground)]/70 mb-1.5">Or type date and time</label>
+            <div className="flex gap-2">
+              <input type="text" value={typeIn} onChange={(e) => setTypeIn(e.target.value)} onBlur={applyTypeIn} placeholder="e.g. Feb 21 3pm or tomorrow 10am" className="flex-1 px-3 py-2.5 rounded-xl text-sm bg-white/50 border border-white/60" />
+              <GlassButton variant="secondary" size="sm" onClick={applyTypeIn}>Apply</GlassButton>
             </div>
           </div>
           <GlassButton variant="primary" fullWidth onClick={handleRequest} disabled={!date || !time}>Request reschedule</GlassButton>
@@ -368,8 +391,18 @@ function BookingModal({ clientId, preselectedDate, onClose, onSuccess }: { clien
   const [selectedDate, setSelectedDate] = useState<string>(initialDate);
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [sessionType, setSessionType] = useState<'in-person' | 'virtual'>('in-person');
+  const [typeIn, setTypeIn] = useState('');
+  const trainerId = client?.trainerId ?? 't1';
+  const baseTimes = (getTrainerAvailabilityHours(trainerId) ?? DEFAULT_BOOKING_TIMES).slice();
+  const times = selectedTime && !baseTimes.includes(selectedTime) ? [selectedTime, ...baseTimes].sort() : baseTimes;
 
-  const times = ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
+  const applyTypeIn = () => {
+    const parsed = parseDateTimeInput(typeIn);
+    if (parsed) {
+      setSelectedDate(parsed.date);
+      setSelectedTime(parsed.time);
+    }
+  };
 
   const handleConfirm = () => {
     if (!selectedDate || !selectedTime || !client) return;
@@ -409,32 +442,43 @@ function BookingModal({ clientId, preselectedDate, onClose, onSuccess }: { clien
 
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium text-[var(--foreground)]/70 mb-2 block">Date</label>
+            <label className="text-sm font-medium text-[var(--foreground)]/70 mb-1.5 block">Date</label>
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="w-full px-4 py-3 rounded-2xl bg-white/50 border border-white/60 focus:ring-2 focus:ring-[var(--primary)]/30 outline-none"
+              className="w-full px-3 py-2.5 rounded-xl text-sm bg-white/50 border border-white/60 focus:ring-2 focus:ring-[var(--primary)]/30 outline-none"
             />
           </div>
 
           <div>
-            <label className="text-sm font-medium text-[var(--foreground)]/70 mb-2 block">Time</label>
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-              {times.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => setSelectedTime(time)}
-                  className={cn(
-                    'px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all',
-                    selectedTime === time
-                      ? 'bg-[var(--primary)] text-white shadow-lg'
-                      : 'bg-white/50 hover:bg-white/70'
-                  )}
-                >
-                  {time}
-                </button>
-              ))}
+            <label className="text-sm font-medium text-[var(--foreground)]/70 mb-1.5 block">Time</label>
+            <select
+              value={selectedTime}
+              onChange={(e) => setSelectedTime(e.target.value)}
+              className="w-full px-3 py-2.5 rounded-xl text-sm bg-white/50 border border-white/60 text-[var(--foreground)] focus:ring-2 focus:ring-[var(--primary)]/30 outline-none"
+            >
+              <option value="">Select time</option>
+              {times.map((t) => {
+                const [h, m] = t.split(':').map(Number);
+                const label = h < 12 ? `${h}:${String(m).padStart(2, '0')} AM` : h === 12 ? `12:${String(m).padStart(2, '0')} PM` : `${h - 12}:${String(m).padStart(2, '0')} PM`;
+                return <option key={t} value={t}>{label}</option>;
+              })}
+            </select>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-[var(--foreground)]/70 mb-1.5 block">Or type date and time</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={typeIn}
+                onChange={(e) => setTypeIn(e.target.value)}
+                onBlur={applyTypeIn}
+                placeholder="e.g. Feb 21 3pm or tomorrow 10am"
+                className="flex-1 px-3 py-2.5 rounded-xl text-sm bg-white/50 border border-white/60"
+              />
+              <GlassButton variant="secondary" size="sm" onClick={applyTypeIn}>Apply</GlassButton>
             </div>
           </div>
 

@@ -115,6 +115,9 @@ html.dark .glass-input {
   border-color: rgba(255, 255, 255, 0.15);
   color: #ffffff;
 }
+html.dark .glass-input-flat:focus-within {
+  border-color: rgba(255, 255, 255, 0.4);
+}
 
 /* Theme Variants */
 [data-theme="sage"] {
@@ -391,6 +394,20 @@ html.dark {
     border-color: rgba(var(--theme-shadow), 0.4);
     box-shadow: 0 0 0 3px rgba(var(--theme-shadow), 0.08);
     background: rgba(255, 255, 255, 0.7);
+  }
+
+  /* Flat variant: no corner radius, single border outline on focus (no inner/outer double box) */
+  .glass-input-flat {
+    border-radius: 0;
+  }
+  .glass-input-flat:focus-within {
+    border-width: 2px;
+    border-color: rgba(var(--theme-shadow), 0.45);
+    box-shadow: none;
+    background: rgba(255, 255, 255, 0.7);
+  }
+  .glass-input-flat:hover {
+    transform: none;
   }
   
   .glass-button {

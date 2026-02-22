@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Palette, Bell, CalendarX, ListTodo, Settings, ChevronRight, Dumbbell, CreditCard, Edit, Users, UserPlus, Plus } from 'lucide-react';
+import { Palette, Bell, CalendarX, ListTodo, Settings, ChevronRight, Dumbbell, CreditCard, Edit, Users, UserPlus, Plus, Clock } from 'lucide-react';
 import { GlassInput } from '@/components/glass/GlassInput';
 import { ThemeProvider, useTheme } from '@/hooks/useTheme';
 import { ThemePicker } from '@/components/ThemePicker';
@@ -8,7 +8,7 @@ import { BottomNav, type NavTab } from '@/components/BottomNav';
 import { GlassButton } from '@/components/glass/GlassButton';
 import { GlassCard } from '@/components/glass/GlassCard';
 import { useAuth } from '@/contexts/AuthContext';
-import { addBroadcastNotice, getTrainerTodos, addTrainerTodo, toggleTrainerTodo, getTrainerPersonalProgram, setTrainerPersonalProgram, assessmentSections, intakeFormFields, addAssessmentSection, addIntakeFormField, getPastMemberships, addPastMembership, currentUser, updateTrainerAvatar, addLeadToList } from '@/data/mockData';
+import { addBroadcastNotice, getTrainerTodos, addTrainerTodo, toggleTrainerTodo, getTrainerPersonalProgram, setTrainerPersonalProgram, assessmentSections, intakeFormFields, addAssessmentSection, addIntakeFormField, getPastMemberships, addPastMembership, currentUser, updateTrainerAvatar, addLeadToList, getTrainerAvailabilityHours, setTrainerAvailabilityHours, DEFAULT_BOOKING_TIMES } from '@/data/mockData';
 import { cn } from '@/lib/utils';
 import { LoginScreen } from '@/sections/LoginScreen';
 import { TrainerDashboard } from '@/sections/trainer/TrainerDashboard';
@@ -63,6 +63,7 @@ function TrainerProfilePage({ onLogout, onNavigate, onNavigateToClients }: { onL
   const [showAssessmentSettingsModal, setShowAssessmentSettingsModal] = useState(false);
   const [showRepurchaseOptionsModal, setShowRepurchaseOptionsModal] = useState(false);
   const [showAddLeadModal, setShowAddLeadModal] = useState<'warm' | 'cold' | null>(null);
+  const [showAvailabilityHoursModal, setShowAvailabilityHoursModal] = useState(false);
 
   const handleTrainerAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -217,6 +218,19 @@ function TrainerProfilePage({ onLogout, onNavigate, onNavigateToClients }: { onL
           </div>
         </GlassCard>
 
+        <GlassCard hover className="cursor-pointer" onClick={() => setShowAvailabilityHoursModal(true)}>
+          <div className="p-4 flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center">
+              <Clock className="w-5 h-5 text-indigo-600" />
+            </div>
+            <div className="flex-1">
+              <p className="font-medium text-[var(--foreground)]">Set availability hours</p>
+              <p className="text-sm text-[var(--muted-foreground)]">Times clients can book (leave empty for all)</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-[var(--muted-foreground)]" />
+          </div>
+        </GlassCard>
+
         <GlassCard hover className="cursor-pointer" onClick={() => setShowTodoModal(true)}>
           <div className="p-4 flex items-center gap-4">
             <div className="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center">
@@ -287,7 +301,67 @@ function TrainerProfilePage({ onLogout, onNavigate, onNavigateToClients }: { onL
           }}
         />
       )}
+      {showAvailabilityHoursModal && (
+        <AvailabilityHoursModal
+          trainerId={auth.status === 'trainer' ? auth.userId : 't1'}
+          onClose={() => setShowAvailabilityHoursModal(false)}
+        />
+      )}
     </div>
+  );
+}
+
+function AvailabilityHoursModal({ trainerId, onClose }: { trainerId: string; onClose: () => void }) {
+  const saved = getTrainerAvailabilityHours(trainerId);
+  const [selected, setSelected] = useState<Set<string>>(new Set(saved ?? []));
+
+  const toggle = (time: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(time)) next.delete(time);
+      else next.add(time);
+      return next;
+    });
+  };
+
+  const handleSave = () => {
+    setTrainerAvailabilityHours(trainerId, selected.size > 0 ? Array.from(selected).sort() : []);
+    onClose();
+  };
+
+  return (
+    <>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50" onClick={onClose} />
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="fixed top-4 left-4 right-4 z-50 glass-strong rounded-3xl p-6 max-w-lg mx-auto max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-[var(--foreground)]">Availability hours</h2>
+          <button onClick={onClose} className="w-10 h-10 rounded-full hover:bg-white/50 flex items-center justify-center">×</button>
+        </div>
+        <p className="text-sm text-[var(--muted-foreground)] mb-4">Select the times clients can book. Leave all unchecked for any time.</p>
+        <div className="grid grid-cols-3 gap-2 mb-6">
+          {DEFAULT_BOOKING_TIMES.map((t) => {
+            const [h, m] = t.split(':').map(Number);
+            const label = h === 0 ? '12:00 AM' : h < 12 ? `${h}:${String(m).padStart(2, '0')} AM` : h === 12 ? `12:${String(m).padStart(2, '0')} PM` : `${h - 12}:${String(m).padStart(2, '0')} PM`;
+            return (
+              <button
+                key={t}
+                type="button"
+                onClick={() => toggle(t)}
+                className={cn(
+                  'py-2 px-3 rounded-xl text-sm font-medium transition-all',
+                  selected.has(t) ? 'bg-[var(--primary)] text-white' : 'bg-white/50 hover:bg-white/70 text-[var(--foreground)]'
+                )}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
+        <GlassButton variant="primary" fullWidth onClick={handleSave}>
+          Save hours
+        </GlassButton>
+      </motion.div>
+    </>
   );
 }
 

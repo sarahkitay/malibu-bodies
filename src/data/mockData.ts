@@ -356,6 +356,22 @@ export function getBlockedDays(trainerId: string): BlockedDay[] {
   return blockedDays.filter((b) => b.trainerId === trainerId);
 }
 
+/** Trainer's bookable time slots (e.g. ["06:00","07:00",...]). If not set, clients see all times. */
+const trainerAvailabilityHours: Record<string, string[]> = {};
+
+/** All possible booking times (6am–8pm, hourly) when trainer has not set custom hours. */
+export const DEFAULT_BOOKING_TIMES = ['06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
+
+export function getTrainerAvailabilityHours(trainerId: string): string[] | null {
+  const hours = trainerAvailabilityHours[trainerId];
+  if (!hours || hours.length === 0) return null;
+  return [...hours].sort();
+}
+
+export function setTrainerAvailabilityHours(trainerId: string, times: string[]): void {
+  trainerAvailabilityHours[trainerId] = [...times].sort();
+}
+
 export function addTrainerTodo(todo: Omit<TrainerTodo, 'id'>): TrainerTodo {
   const id = `todo${Date.now()}`;
   const newTodo: TrainerTodo = { ...todo, id };

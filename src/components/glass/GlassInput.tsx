@@ -78,6 +78,8 @@ interface GlassTextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaEl
   label?: string;
   error?: string;
   helperText?: string;
+  /** No corner radius and single border outline on focus (for Identity Worksheet, etc.) */
+  flat?: boolean;
 }
 
 export function GlassTextArea({
@@ -85,6 +87,7 @@ export function GlassTextArea({
   error,
   helperText,
   className,
+  flat,
   ...props
 }: GlassTextAreaProps) {
   return (
@@ -98,7 +101,7 @@ export function GlassTextArea({
         className={cn(
           'relative',
           'glass-input transition-all duration-300',
-          'focus-within:ring-2 focus-within:ring-[var(--primary)]/30 focus-within:bg-white/70',
+          flat ? 'glass-input-flat' : 'focus-within:ring-2 focus-within:ring-[var(--primary)]/30 focus-within:bg-white/70',
           error && 'ring-2 ring-[var(--destructive)]/50 bg-[var(--destructive)]/5'
         )}
       >

@@ -214,6 +214,7 @@ You do not need a new personality. You need new standards. And those start here.
             <GlassCard key={q.id} className="p-4">
               <label className="block text-sm font-semibold text-[var(--foreground)] mb-2">{applyPronouns(q.label, pronouns)}</label>
               <GlassTextArea
+                flat
                 value={answers[q.id] ?? ''}
                 onChange={(e) => setAnswer(q.id, e.target.value)}
                 placeholder={q.placeholder ? applyPronouns(q.placeholder, pronouns) : undefined}
@@ -233,6 +234,7 @@ You do not need a new personality. You need new standards. And those start here.
             <GlassCard key={q.id} className="p-4">
               <label className="block text-sm font-semibold text-[var(--foreground)] mb-2">{applyPronouns(q.label, pronouns)}</label>
               <GlassTextArea
+                flat
                 value={answers[q.id] ?? ''}
                 onChange={(e) => setAnswer(q.id, e.target.value)}
                 placeholder={q.placeholder ? applyPronouns(q.placeholder, pronouns) : undefined}
@@ -252,6 +254,7 @@ You do not need a new personality. You need new standards. And those start here.
             <GlassCard key={q.id} className="p-4">
               <label className="block text-sm font-semibold text-[var(--foreground)] mb-2">{applyPronouns(q.label, pronouns)}</label>
               <GlassTextArea
+                flat
                 value={answers[q.id] ?? ''}
                 onChange={(e) => setAnswer(q.id, e.target.value)}
                 placeholder={q.placeholder ? applyPronouns(q.placeholder, pronouns) : undefined}
@@ -271,6 +274,7 @@ You do not need a new personality. You need new standards. And those start here.
             <GlassCard key={q.id} className="p-4">
               <label className="block text-sm font-semibold text-[var(--foreground)] mb-2">{applyPronouns(q.label, pronouns)}</label>
               <GlassTextArea
+                flat
                 value={answers[q.id] ?? ''}
                 onChange={(e) => setAnswer(q.id, e.target.value)}
                 placeholder={q.placeholder ? applyPronouns(q.placeholder, pronouns) : undefined}
@@ -290,6 +294,7 @@ You do not need a new personality. You need new standards. And those start here.
             <GlassCard key={q.id} className="p-4">
               <label className="block text-sm font-semibold text-[var(--foreground)] mb-2">{applyPronouns(q.label, pronouns)}</label>
               <GlassTextArea
+                flat
                 value={answers[q.id] ?? ''}
                 onChange={(e) => setAnswer(q.id, e.target.value)}
                 placeholder={q.placeholder ? applyPronouns(q.placeholder, pronouns) : undefined}
