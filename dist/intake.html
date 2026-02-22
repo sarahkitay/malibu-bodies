@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Malibu Bodies" />
+  <meta name="theme-color" content="#FBF7F4" />
+  <meta name="description" content="Malibu Bodies Application & Intake Form for Custom Programming, Coaching & In-Person Training" />
+  <title>Malibu Bodies Application & Intake Form</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* Aligned with Malibu Bodies app styling */
+    :root {
+      --primary: #c9a86c;
+      --foreground: #1a1a1a;
+      --muted-foreground: #6b7280;
+      --background: #FBF7F4;
+      --border: rgba(0,0,0,0.08);
+      --radius: 12px;
+      --radius-lg: 16px;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: 'Cormorant Garamond', serif; margin: 0; padding: 20px; background: var(--background); color: var(--foreground); min-height: 100vh; }
+    .intake-header { text-align: center; margin-bottom: 28px; }
+    .intake-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin: 0; font-weight: 600; }
+    .section-title { font-size: 1.1rem; margin-bottom: 12px; font-weight: 600; }
+    .form-group { margin-bottom: 18px; }
+    .form-label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted-foreground); }
+    .form-input, .form-textarea {
+      width: 100%; padding: 14px 16px; border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.6); backdrop-filter: blur(8px);
+      border: 1px solid var(--border); box-sizing: border-box;
+      font-family: inherit; font-size: 1rem; color: var(--foreground);
+    }
+    .form-input:focus, .form-textarea:focus { outline: 2px solid var(--primary); outline-offset: 2px; }
+    .form-textarea { min-height: 80px; resize: vertical; }
+    .payment-link {
+      display: block; padding: 14px 20px; margin: 8px 0;
+      background: var(--foreground); color: white; text-align: center;
+      border-radius: var(--radius-lg); text-decoration: none; font-weight: 500;
+      transition: opacity 0.2s;
+    }
+    .payment-link:hover { opacity: 0.9; }
+    .btn-primary {
+      background: var(--foreground); color: white; border: none;
+      padding: 16px 24px; border-radius: var(--radius-lg); font-size: 1rem;
+      font-weight: 500; cursor: pointer; width: 100%; font-family: inherit;
+    }
+    .btn-primary:hover { opacity: 0.95; }
+    .radio-group label, .checkbox-group label { display: flex; align-items: center; gap: 10px; margin: 10px 0; cursor: pointer; padding: 10px 14px; border-radius: var(--radius); background: rgba(255,255,255,0.4); }
+    .scale-value { text-align: center; font-weight: 600; margin-top: 6px; color: var(--primary); }
+    .payment-section { background: rgba(255,255,255,0.5); padding: 24px; border-radius: var(--radius-lg); margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <main class="intake-page">
+    <div class="intake-header">
+      <h1 class="intake-title">Malibu Bodies Application & Intake Form</h1>
+      <p style="font-size: 14px; color: var(--muted-foreground);">Custom Programming, Coaching & In-Person Training</p>
+      <h2 style="margin-top: 24px;">Welcome to Malibu Bodies</h2>
+      <p>This application is required for custom programming, virtual coaching, and in-person training.</p>
+      <p style="color: var(--muted-foreground); font-size: 14px;">Pre-made programs are purchased separately and delivered automatically. They do not require an application.</p>
+      <p>Please answer honestly. I personally review every application and reserve the right to accept or decline based on fit.</p>
+    </div>
+
+    <form id="intakeForm">
+      <section>
+        <h2 class="section-title">Basic Information</h2>
+        <div class="form-group">
+          <label class="form-label">Full Name *</label>
+          <input type="text" class="form-input" required placeholder="Your full name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email *</label>
+          <input type="email" class="form-input" required placeholder="All communication is sent here" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-input" placeholder="Required for in-person training" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date of Birth</label>
+          <input type="date" class="form-input" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Height</label>
+          <input type="text" class="form-input" placeholder="e.g., 5'6&quot;" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Current Weight (lbs)</label>
+          <input type="number" class="form-input" min="0" step="0.1" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Goal Weight (lbs)</label>
+          <input type="number" class="form-input" min="0" step="0.1" placeholder="Optional" />
+        </div>
+      </section>
+
+      <section style="margin-top: 24px;">
+        <h2 class="section-title">What Are You Applying For? *</h2>
+        <p style="font-size: 13px; color: var(--muted-foreground); margin-bottom: 12px;">Select ONE primary option:</p>
+        <div class="radio-group">
+          <label><input type="radio" name="program" value="bundle" required /> Custom Training + Meal Plan Bundle (Self-Guided – 6 Weeks)</label>
+          <label><input type="radio" name="program" value="coaching" /> Virtual 1:1 Coaching (8-Week Program – Application Only)</label>
+          <label><input type="radio" name="program" value="in-person" /> In-Person Personal Training (Consultation Required)</label>
+        </div>
+      </section>
+
+      <section style="margin-top: 24px;">
+        <h2 class="section-title">Goals & Readiness</h2>
+        <div class="form-group">
+          <label class="form-label">Primary goal for next 6-8 weeks? *</label>
+          <textarea class="form-textarea" required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Why is this goal important? *</label>
+          <textarea class="form-textarea" required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Commitment level (1-10) *</label>
+          <input type="range" min="1" max="10" value="5" class="form-input" required />
+          <div class="scale-value" id="commitmentValue">5</div>
+        </div>
+      </section>
+
+      <section style="margin-top: 24px;">
+        <h2 class="section-title">Lifestyle & Schedule</h2>
+        <div class="form-group">
+          <label class="form-label">Typical weekday *</label>
+          <textarea class="form-textarea" required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">When would you train? *</label>
+          <div class="radio-group">
+            <label><input type="radio" name="workoutTime" value="morning" required /> Morning</label>
+            <label><input type="radio" name="workoutTime" value="midday" /> Midday</label>
+            <label><input type="radio" name="workoutTime" value="evening" /> Evening</label>
+            <label><input type="radio" name="workoutTime" value="varies" /> Varies</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Days per week? *</label>
+          <div class="radio-group">
+            <label><input type="radio" name="daysPerWeek" value="2-3" required /> 2-3</label>
+            <label><input type="radio" name="daysPerWeek" value="3-4" /> 3-4</label>
+            <label><input type="radio" name="daysPerWeek" value="4-5" /> 4-5</label>
+            <label><input type="radio" name="daysPerWeek" value="5+" /> 5+</label>
+          </div>
+        </div>
+      </section>
+
+      <section style="margin-top: 24px;">
+        <h2 class="section-title">Training Experience</h2>
+        <div class="form-group">
+          <label class="form-label">Activity level *</label>
+          <div class="radio-group">
+            <label><input type="radio" name="activityLevel" value="beginner" required /> Beginner</label>
+            <label><input type="radio" name="activityLevel" value="intermediate" /> Intermediate</label>
+            <label><input type="radio" name="activityLevel" value="advanced" /> Advanced</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Equipment access? *</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" name="equipment" value="full-gym" /> Full gym</label>
+            <label><input type="checkbox" name="equipment" value="apartment-gym" /> Apartment gym</label>
+            <label><input type="checkbox" name="equipment" value="home-weights" /> Home weights</label>
+            <label><input type="checkbox" name="equipment" value="no-equipment" /> No equipment</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Injuries or movements to avoid?</label>
+          <textarea class="form-textarea"></textarea>
+        </div>
+      </section>
+
+      <section style="margin-top: 24px;">
+        <h2 class="section-title">Agreements</h2>
+        <div class="checkbox-group">
+          <label><input type="checkbox" required /> I have medical clearance to exercise. *</label>
+          <label><input type="checkbox" required /> I accept full responsibility for my participation. *</label>
+          <label><input type="checkbox" required /> Results depend on my consistency. *</label>
+          <label><input type="checkbox" required /> No refunds once program begins. *</label>
+          <label><input type="checkbox" required /> Submission does not guarantee acceptance. *</label>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Digital Signature (Type Full Name) *</label>
+          <input type="text" class="form-input" required placeholder="Your full legal name" />
+        </div>
+      </section>
+
+      <section class="payment-section">
+        <h3 class="section-title">Complete Your Application & Payment</h3>
+        <p style="margin-bottom: 16px;">Submit this form first. For paid programs, use the payment link below. Name and email at checkout must match this form.</p>
+        <a href="https://checkout.square.site/merchant/ML9WBQJ90S78C/checkout/4ZSBL7P6U5IIVVEB2HVCZOVC" target="_blank" rel="noopener" class="payment-link">Custom Training + Meal Plan Bundle ($399)</a>
+        <a href="https://square.link/u/fqZ95WXu" target="_blank" rel="noopener" class="payment-link">Pre-Made Program ($149)</a>
+        <a href="https://square.link/u/mv9X7Ast" target="_blank" rel="noopener" class="payment-link">Custom Training ($249)</a>
+        <a href="https://square.link/u/LFNchDSB" target="_blank" rel="noopener" class="payment-link">Custom Meal Plan ($179)</a>
+      </section>
+
+      <div style="margin-top: 24px; padding: 16px; background: rgba(255,255,255,0.5); border-radius: var(--radius-lg); font-size: 14px; color: var(--muted-foreground);">
+        <p style="font-weight: 600; color: var(--foreground); margin-bottom: 8px;">What Happens Next</p>
+        <p>• Applications are reviewed within 3–5 business days</p>
+        <p>• If accepted, you will receive payment instructions and next steps via email</p>
+        <p>• If not a fit, I may recommend a pre-made program instead</p>
+      </div>
+      <div style="margin-top: 24px;">
+        <button type="submit" class="btn-primary">Submit Application</button>
+      </div>
+    </form>
+  </main>
+  <script>
+    document.querySelector('input[type="range"]').addEventListener('input', function() {
+      document.getElementById('commitmentValue').textContent = this.value;
+    });
+    document.getElementById('intakeForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Thank you! Your application has been submitted. We will review within 3-5 business days.');
+    });
+  </script>
+</body>
+</html>
