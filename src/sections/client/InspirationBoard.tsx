@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Type, Download, Smartphone, X, Palette, Layers, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Type, Download, X, Palette, Layers, ChevronDown, ChevronUp } from 'lucide-react';
 import { GlassCard } from '@/components/glass/GlassCard';
 import { GlassButton } from '@/components/glass/GlassButton';
 import { Header } from '@/components/Header';
@@ -65,7 +65,6 @@ export function InspirationBoard({ clientId, onBack }: InspirationBoardProps) {
   const [items, setItems] = useState<BoardItem[]>(() => loadBoard(clientId));
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [imageEditPanelOpen, setImageEditPanelOpen] = useState(false);
-  const [showHomeScreenHint, setShowHomeScreenHint] = useState(false);
   const [showBgPicker, setShowBgPicker] = useState(false);
   const [showLayers, setShowLayers] = useState(false);
   const [backgroundColor, setBackgroundColor] = useState(() => loadBgColor(clientId));
@@ -205,9 +204,6 @@ export function InspirationBoard({ clientId, onBack }: InspirationBoardProps) {
           </GlassButton>
           <GlassButton size="sm" leftIcon={<Download className="w-4 h-4" />} onClick={handleSaveImage}>
             Save to device
-          </GlassButton>
-          <GlassButton size="sm" variant="secondary" leftIcon={<Smartphone className="w-4 h-4" />} onClick={() => setShowHomeScreenHint(true)}>
-            Add to Home Screen
           </GlassButton>
           <GlassButton size="sm" variant="secondary" leftIcon={<Palette className="w-4 h-4" />} onClick={() => setShowBgPicker(!showBgPicker)}>
             Background
@@ -412,19 +408,6 @@ export function InspirationBoard({ clientId, onBack }: InspirationBoardProps) {
               </GlassButton>
             </div>
           </div>
-        </div>
-      )}
-
-      {showHomeScreenHint && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setShowHomeScreenHint(false)}>
-          <GlassCard className="max-w-md p-6" onClick={e => e.stopPropagation()}>
-            <h3 className="font-semibold mb-2">Add to Home Screen</h3>
-            <p className="text-sm text-[var(--muted-foreground)] mb-4">
-              <strong>iPhone:</strong> Tap Share, then &quot;Add to Home Screen&quot;.
-              <br /><strong>Android:</strong> Tap menu (⋮), then &quot;Add to Home screen&quot;.
-            </p>
-            <GlassButton variant="primary" fullWidth onClick={() => setShowHomeScreenHint(false)}>Got it</GlassButton>
-          </GlassCard>
         </div>
       )}
     </div>
